@@ -1,42 +1,92 @@
 <!-- templates/base.html -->
+{% load compress %}
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'src/output.css' %}">
+    {% endcompress %}
 </head>
 
 <body>
 <main>
     <header>
-        <div>
-            <div>
-                <a href="/"><p>SportEvent</p></a>
-            </div>
-            <div>
-                <a href="{% url 'facilities' %}"><p>Facilities</p></a>
-                <a href="/"><p>Events</p></a>
-                <a href="/"><p>Map</p></a>
-            </div>
-            <div>
-                <a href="facilities/add/"><p>Add Facility</p></a>
-                <a href="/"><p>Add Event</p></a>
-                {% if user.is_authenticated %}
-                    <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit">Log out</button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'login' %}"><p>Log in</p></a>
-                {% endif %}
-            </div>
+        <div class="bg-white">
+            <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+                <div class="flex lg:flex-1">
+                    <a href="/" class="-m-1.5 p-1.5">
+                        <div class="flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"></path>
+                            </svg>
+                            <p class="text-base font-semibold">SportEvents</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="lg:flex lg:gap-x-12">
+                    <a href="{% url 'facilities' %}"
+                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                        <div class="flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z"></path>
+                            </svg>
+                            <p class="ml-0.5">Facilities</p>
+                        </div>
+                    </a>
+                    <a href="/"
+                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                        <div class="flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"></path>
+                            </svg>
+                            <p class="ml-0.5">Events</p>
+                        </div>
+                    </a>
+                    <a href="/"
+                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                        <div class="flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z"></path>
+                            </svg>
+                            <p class="ml-0.5">Map</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="lg:flex lg:flex-1 lg:justify-end">
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                                Log out
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}"
+                           class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">Log
+                            in</a>
+                    {% endif %}
+                </div>
+            </nav>
         </div>
     </header>
-
-    {% block content %}
-    {% endblock %}
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
 </main>
 </body>
-
 </html>
