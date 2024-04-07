@@ -139,3 +139,11 @@ GitHub.sublime-settings
 
 #.idea/
 .idea/
+
+# cache
+*/CACHE
+
+# npm
+node_modules
+package-lock.json
+package.json
