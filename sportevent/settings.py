@@ -124,5 +124,5 @@ LOGOUT_REDIRECT_URL = 'home'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-MEDIA_URL = "/images/"
-MEDIA_ROOT = BASE_DIR / "images"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
