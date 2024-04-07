@@ -3,15 +3,40 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+    <meta charset="utf-8">
+    <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
 </head>
 
 <body>
-  <main>
+<main>
+    <header>
+        <div>
+            <div>
+                <a href="/"><p>SportEvent</p></a>
+            </div>
+            <div>
+                <a href="{% url 'facilities' %}"><p>Facilities</p></a>
+                <a href="/"><p>Events</p></a>
+                <a href="/"><p>Map</p></a>
+            </div>
+            <div>
+                <a href="facilities/add/"><p>Add Facility</p></a>
+                <a href="/"><p>Add Event</p></a>
+                {% if user.is_authenticated %}
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}"><p>Log in</p></a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
     {% block content %}
     {% endblock %}
-  </main>
+</main>
 </body>
 
 </html>

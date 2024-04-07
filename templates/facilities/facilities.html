@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Facilities<{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for facility in object_list %}
+            <h2>{{ facility.name }}</h2>
+            <p>{{ facility.description }}</p>
+            {% if facility.images %}
+                <img src="{{ facility.images.url }}" alt="{{ facility.name }}">
+            {% endif %}
+            <p>{{ facility.location }}</p>
+            <p>{{ facility.sport_type }}</p>
+            <p>{{ facility.capacity }}</p>
+            {% if facility.is_indoor %}
+                <p>Indoor</p>
+            {% else %}
+                <p>Outdoor</p>
+            {% endif %}
+            <p>{{ facility.contact_information }}</p>
+        {% endfor %}
+    </ul>
+{% endblock %}
