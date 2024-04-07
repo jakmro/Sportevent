@@ -35,7 +35,7 @@ class OpenHours(models.Model):
     close_time = models.TimeField()
 
     def __str__(self):
-        return f'{self.get_day_display()} - {self.open_time.strftime('%H:%M')} to {self.close_time.strftime('%H:%M')}'
+        return f'{self.get_day_display()} - {self.open_time.strftime("%H:%M")} to {self.close_time.strftime("%H:%M")}'
 
     class Meta:
         unique_together = ('facility', 'day')
