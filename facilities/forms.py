@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Facility, OpenHours, Rating
+from .models import Facility, Rating
 
 
 class FacilityForm(forms.ModelForm):
@@ -12,21 +12,8 @@ class FacilityForm(forms.ModelForm):
             'images',
             'location',
             'sport_type',
-            'capacity',
             'is_indoor',
             'contact_information'
-        ]
-
-
-class OpenHoursForm(forms.ModelForm):
-    class Meta:
-        model = OpenHours
-        fields = [
-            'user',
-            'facility',
-            'day',
-            'open_time',
-            'close_time'
         ]
 
 
@@ -34,8 +21,6 @@ class RatingForm(forms.ModelForm):
     class Meta:
         model = Rating
         fields = [
-            'user',
-            'facility',
             'rating',
-            'description'
+            'comment'
         ]

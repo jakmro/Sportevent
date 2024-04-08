@@ -3,9 +3,14 @@
 {% block title %}Facilities<{% endblock %}
 
 {% block content %}
+    <a href="/facilities/add">
+        <p>Add Facility</p>
+    </a>
     <ul>
         {% for facility in object_list %}
-            <h2>{{ facility.name }}</h2>
+            <a href='/facilities/{{ facility.id }}'>
+                <h2>{{ facility.name }}</h2>
+            </a>
             <p>{{ facility.description }}</p>
             {% if facility.images %}
                 <img src="{{ facility.images.url }}" alt="{{ facility.name }}">
