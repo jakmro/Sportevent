@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Update Facility<{% endblock %}
+
+{% block content %}
+    <h1>Update Facility</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+        <a href="{% url 'facilities' %}">
+            <p>Cancel</p>
+        </a>
+    </form>
+{% endblock %}

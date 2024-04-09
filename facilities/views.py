@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -48,3 +48,21 @@ class AddRatingView(LoginRequiredMixin, CreateView):
         form.instance.facility = Facility.objects.get(id=facility_id)
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+class DeleteFacilityView(DeleteView):
+    model = Facility
+    success_url = '/facilities'
+    template_name = 'facilities/delete_facility.html'
+
+class UpdateFacilityView(UpdateView):
+    model = Facility
+    fields = [
+        'name',
+        'description',
+        'location',
+        'sport_type',
+        'is_indoor',
+        'contact_information'
+    ]
+    success_url = '/facilities'
+    template_name = 'facilities/update_facility.html'
