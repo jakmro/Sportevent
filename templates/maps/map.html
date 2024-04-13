@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: {lat: 50.065, lng: 19.945},
+                zoom: 8,
+            });
+
+            const infoDiv = document.getElementById('infowindow');
+            map.addListener('click', function () {
+                infoDiv.classList.add('hidden');
+            });
+
+            fetch("http://localhost:8000/facilities/data")
+                .then((response) => response.json())
+                .then((data) => {
+                    data.forEach((i) => {
+                        const marker = new google.maps.Marker({
+                            map: map,
+                            position: {lat: i.latitude, lng: i.longitude},
+                        });
+                        console.log(data)
+
+                        marker.addListener('click', () => {
+                            infoDiv.classList.remove('hidden');
+                            infoDiv.innerHTML = `
+                                <a href=http://localhost:8000/facilities/${i.id}>
+                                    <img src="/media/${i.image}" alt="${i.name}" class="w-full">
+                                    <div class="p-2">
+                                        <p>Name: ${i.name}</p>
+                                        <p>Location: ${i.location}</p>
+                                        <p>Description: ${i.description}</p>
+                                        <p>Rating: ${i.rating}</p>
+                                    </div>
+                                </a>
+                            `;
+                        });
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        window.initMap = initMap;
+    </script>
+    <div class="w-full h-screen">
+        <div id="map" class="h-full relative"></div>
+        <div id="infowindow" class="hidden absolute bottom-0 left-6 bg-white z-10 w-1/4">
+        </div>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ key }}&callback=initMap&v=weekly" defer></script>
+    </div>
+{% endblock content %}

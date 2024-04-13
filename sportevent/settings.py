@@ -9,8 +9,12 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# loading .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,16 +124,21 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# accounts
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
+# email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# images
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Tailwindcss
 COMPRESS_ROOT = BASE_DIR / 'static'
-
 COMPRESS_ENABLED = True
-
 STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+
+# Google Maps API
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
