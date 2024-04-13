@@ -1,7 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
 
