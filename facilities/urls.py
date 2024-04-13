@@ -1,5 +1,4 @@
 from django.urls import path
-
 from .views import FacilitiesView, FacilityView, AddFacilityView, AddRatingView, DeleteFacilityView, UpdateFacilityView
 
 urlpatterns = [

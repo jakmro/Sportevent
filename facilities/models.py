@@ -7,7 +7,7 @@ class Facility(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField()
-    images = models.ImageField(upload_to='images', blank=True)
+    image = models.ImageField(upload_to='images', blank=True)
     location = models.CharField(max_length=256)
     sport_type = models.CharField(max_length=128)
     is_indoor = models.BooleanField()

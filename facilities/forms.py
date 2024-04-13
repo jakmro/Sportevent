@@ -1,15 +1,14 @@
-from django import forms
-
+from django.forms import ModelForm
 from .models import Facility, Rating
 
 
-class FacilityForm(forms.ModelForm):
+class FacilityForm(ModelForm):
     class Meta:
         model = Facility
         fields = [
             'name',
             'description',
-            'images',
+            'image',
             'location',
             'sport_type',
             'is_indoor',
@@ -17,7 +16,7 @@ class FacilityForm(forms.ModelForm):
         ]
 
 
-class RatingForm(forms.ModelForm):
+class RatingForm(ModelForm):
     class Meta:
         model = Rating
         fields = [
