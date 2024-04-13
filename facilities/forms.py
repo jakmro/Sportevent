@@ -8,7 +8,7 @@ class FacilityForm(ModelForm):
         fields = [
             'name',
             'description',
-            'images',
+            'image',
             'location',
             'sport_type',
             'is_indoor',

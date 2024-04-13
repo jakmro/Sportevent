@@ -5,8 +5,8 @@
 {% block content %}
     <h2>{{ facility.name }}</h2>
     <p>{{ facility.description }}</p>
-    {% if facility.images %}
-        <img src="{{ facility.images.url }}" alt="{{ facility.name }}">
+    {% if facility.image %}
+        <img src="{{ facility.image.url }}" alt="{{ facility.name }}">
     {% endif %}
     <p>{{ facility.location }}</p>
     <p>{{ facility.sport_type }}</p>
