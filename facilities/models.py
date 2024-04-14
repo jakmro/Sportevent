@@ -14,6 +14,8 @@ class Facility(models.Model):
     sport_type = models.CharField(max_length=128)
     is_indoor = models.BooleanField()
     contact_information = models.TextField(blank=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
     def __str__(self):
         return self.name

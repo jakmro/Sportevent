@@ -1,6 +1,11 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.conf import settings
+from django.db.models import Avg
+import requests
+import json
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
 
@@ -19,6 +24,21 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+
+        location = form.cleaned_data['location']
+        location_url_format = location.replace(' ', '+')
+
+        res = requests.get(
+            f'https://maps.googleapis.com/maps/api/geocode/json?address={location_url_format}&key={settings.GOOGLE_API_KEY}'
+        )
+        response = json.loads(res.text)
+
+        latitude = response['results'][0]['geometry']['location']['lat']
+        longitude = response['results'][0]['geometry']['location']['lng']
+
+        form.instance.latitude = latitude
+        form.instance.longitude = longitude
+
         return super().form_valid(form)
 
 
@@ -67,3 +87,16 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         facility_id = self.kwargs.get('pk')
         return reverse_lazy('facility', kwargs={'pk': facility_id})
+
+def get_facilities_data(request):
+    facilities = list(Facility.objects.values())
+
+    for i, facility in enumerate(facilities):
+        rating = Rating.objects.filter(facility_id=facility['id']).aggregate(Avg('rating'))
+        if rating['rating__avg']:
+            rounded_rating = round(rating['rating__avg'], 1)
+        else:
+            rounded_rating = "No ratings"
+        facilities[i]['rating'] = rounded_rating
+
+    return JsonResponse(facilities, safe=False)
