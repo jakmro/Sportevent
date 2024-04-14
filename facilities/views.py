@@ -73,7 +73,7 @@ def get_facilities_data(request):
     facilities = list(Facility.objects.values())
 
     for i, facility in enumerate(facilities):
-        rating = Rating.objects.filter(id=facility['id']).aggregate(Avg('rating'))
+        rating = Rating.objects.filter(facility_id=facility['id']).aggregate(Avg('rating'))
         if rating['rating__avg']:
             rounded_rating = round(rating['rating__avg'], 1)
         else:
