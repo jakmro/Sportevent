@@ -48,12 +48,12 @@ class AddRatingView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class DeleteFacilityView(DeleteView):
+class DeleteFacilityView(LoginRequiredMixin, DeleteView):
     model = Facility
     success_url = '/facilities'
     template_name = 'facilities/delete_facility.html'
 
-class UpdateFacilityView(UpdateView):
+class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     model = Facility
     fields = [
         'name',
@@ -63,5 +63,7 @@ class UpdateFacilityView(UpdateView):
         'is_indoor',
         'contact_information'
     ]
-    success_url = '/facilities'
     template_name = 'facilities/update_facility.html'
+    def get_success_url(self):
+        facility_id = self.kwargs.get('pk')
+        return reverse_lazy('facility', kwargs={'pk': facility_id})

@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}Delete Facility<{% endblock %}
+{% block title %}Delete Facility{% endblock %}
 
 {% block content %}
-    <h1>Delete Facility</h1>
-    <form method="post">
-        {% csrf_token %}
-        <p>Are you sure you want to delete "{{ object }}"?</p>
-        <input type="submit" value="Confirm">
-        <a href="{% url 'facilities' %}">
-            <p>Cancel</p>
-        </a>
-    </form>
+    {% if user.pk == facility.user.pk %}
+        <h1>Delete Facility</h1>
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            <input type="submit" value="Confirm">
+            <a href="{% url 'facilities' %}">
+                <p>Cancel</p>
+            </a>
+        </form>
+    {% else %}
+        <p>You are not owner of this object so you can't delete it.</p>
+    {% endif %}
 {% endblock %}

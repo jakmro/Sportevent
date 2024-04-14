@@ -67,6 +67,13 @@
                 </div>
                 <div class="lg:flex lg:flex-1 lg:justify-end">
                     {% if user.is_authenticated %}
+                        <a href="/accounts/profile/{{ user.pk }}" class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                            My Profile
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="lg:flex lg:flex-1 lg:justify-end">
+                    {% if user.is_authenticated %}
                         <form action="{% url 'logout' %}" method="post">
                             {% csrf_token %}
                             <button type="submit"

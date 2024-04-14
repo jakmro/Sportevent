@@ -2,9 +2,11 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
+from accounts.models import CustomUser
+
 
 class Facility(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField()
     image = models.ImageField(upload_to='images', blank=True)
@@ -18,7 +20,7 @@ class Facility(models.Model):
 
 
 class Rating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
     rating = models.IntegerField(
         validators=[

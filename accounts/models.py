@@ -1,3 +1,13 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
+class CustomUser(AbstractUser):
+    pass
+    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    sports = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.username
+
