@@ -9,7 +9,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Update</button>
-        <a href="{% url 'user_profile' pk=object.pk %}">
+        <a href="{% url 'user_profile' object.pk %}">
             <p>Cancel</p>
         </a>
     </form>

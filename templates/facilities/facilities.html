@@ -3,12 +3,12 @@
 {% block title %}Facilities<{% endblock %}
 
 {% block content %}
-    <a href="/facilities/add">
+    <a href="{% url 'add_facility' %}">
         <p>Add Facility</p>
     </a>
     <ul>
-        {% for facility in object_list %}
-            <a href='/facilities/{{ facility.id }}'>
+        {% for facility in facilities_list %}
+            <a href="{% url 'facility' facility.pk %}">
                 <h2>{{ facility.name }}</h2>
             </a>
             <p>{{ facility.description }}</p>

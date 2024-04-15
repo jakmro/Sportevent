@@ -14,6 +14,7 @@ from .models import Facility, Rating
 class FacilitiesView(ListView):
     model = Facility
     template_name = 'facilities/facilities.html'
+    context_object_name = 'facilities_list'
 
 
 class AddFacilityView(LoginRequiredMixin, CreateView):
@@ -114,6 +115,6 @@ def get_facilities_data(request):
         if rating['rating__avg']:
             rounded_rating = round(rating['rating__avg'], 1)
         else:
-            rounded_rating = "No ratings"
+            rounded_rating = 'No ratings'
         facilities[i]['rating'] = rounded_rating
     return JsonResponse(facilities, safe=False)

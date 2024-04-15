@@ -18,16 +18,16 @@
     {% endif %}
     <p>{{ facility.contact_information }}</p>
     {% if user.is_authenticated and user.pk == facility.user.pk %}
-        <a href="/facilities/{{ facility.pk }}/update">
+        <a href="{% url 'update_facility' facility.pk %}">
             <p>Update Facility</p>
         </a>
     {% endif %}
     {% if user.is_authenticated and user.pk == facility.user.pk %}
-        <a href="/facilities/{{ facility.pk }}/delete">
+        <a href="{% url 'delete_facility' facility.pk %}">
             <p>Delete Facility</p>
         </a>
     {% endif %}
-    <a href="/facilities/{{ facility.id }}/add_rating">
+    <a href="{% url 'add_rating' facility.pk %}">
         <p>Add Rating</p>
     </a>
     {% for rating in ratings %}
