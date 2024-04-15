@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import FacilitiesView, FacilityView, AddFacilityView, AddRatingView, get_facilities_data, DeleteFacilityView, UpdateFacilityView
+from .views import FacilitiesView, FacilityView, AddFacilityView, AddRatingView, get_facilities_data, \
+    DeleteFacilityView, UpdateFacilityView
 
 urlpatterns = [
     path('', FacilitiesView.as_view(), name='facilities'),

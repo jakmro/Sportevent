@@ -1,12 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.conf import settings
 from django.db.models import Avg
-from django.http import Http404
-from django.utils.translation import gettext as _
-
+from django.utils.translation import gettext
 import requests
 import json
 from .forms import FacilityForm, RatingForm
@@ -23,7 +21,6 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
     form_class = FacilityForm
     template_name = 'facilities/add_facility.html'
     success_url = reverse_lazy('facilities')
-    login_url = '/accounts/login/'
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -59,7 +56,6 @@ class AddRatingView(LoginRequiredMixin, CreateView):
     model = Rating
     form_class = RatingForm
     template_name = 'facilities/add_rating.html'
-    login_url = '/accounts/login/'
 
     def get_success_url(self):
         facility_id = self.kwargs.get('facility_id')
@@ -71,6 +67,7 @@ class AddRatingView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class DeleteFacilityView(LoginRequiredMixin, DeleteView):
     model = Facility
     success_url = '/facilities'
@@ -80,9 +77,10 @@ class DeleteFacilityView(LoginRequiredMixin, DeleteView):
         obj = super(DeleteFacilityView, self).get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
-                _("You don't own this object")
+                gettext("You don't own this object")
             )
         return obj
+
 
 class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     model = Facility
@@ -95,6 +93,7 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
         'contact_information'
     ]
     template_name = 'facilities/update_facility.html'
+
     def get_success_url(self):
         facility_id = self.kwargs.get('pk')
         return reverse_lazy('facility', kwargs={'pk': facility_id})
@@ -103,13 +102,13 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
         obj = super(UpdateFacilityView, self).get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
-                _("You don't own this object")
+                gettext("You don't own this object")
             )
         return obj
 
+
 def get_facilities_data(request):
     facilities = list(Facility.objects.values())
-
     for i, facility in enumerate(facilities):
         rating = Rating.objects.filter(facility_id=facility['id']).aggregate(Avg('rating'))
         if rating['rating__avg']:
@@ -117,5 +116,4 @@ def get_facilities_data(request):
         else:
             rounded_rating = "No ratings"
         facilities[i]['rating'] = rounded_rating
-
     return JsonResponse(facilities, safe=False)
