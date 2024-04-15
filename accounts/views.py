@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import CustomUser
@@ -33,6 +33,19 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         obj = super(UpdateProfileView, self).get_object(queryset)
+        if obj != self.request.user:
+            raise Http404(
+                _("You don't own this profile")
+            )
+        return obj
+
+class DeleteProfileView(LoginRequiredMixin, DeleteView):
+    model = CustomUser
+    success_url = reverse_lazy('home')
+    template_name = 'users/delete_user_profile.html'
+
+    def get_object(self, queryset=None):
+        obj = super(DeleteProfileView, self).get_object(queryset)
         if obj != self.request.user:
             raise Http404(
                 _("You don't own this profile")
