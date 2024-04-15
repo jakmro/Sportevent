@@ -17,10 +17,15 @@
         <a href="/accounts/profile/{{ user_profile.pk }}/update">
             <p>Update Profile</p>
         </a>
-    {% endif %}
-    {% if user.is_authenticated and user_profile.pk == request.user.pk %}
         <a href="/accounts/profile/{{ user_profile.pk }}/delete">
             <p>Delete Profile</p>
         </a>
     {% endif %}
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit"
+                class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+            Log out
+        </button>
+    </form>
 {% endblock %}
