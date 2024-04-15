@@ -17,6 +17,16 @@
         <p>Outdoor</p>
     {% endif %}
     <p>{{ facility.contact_information }}</p>
+    {% if user.is_authenticated and user.pk == facility.user.pk %}
+        <a href="/facilities/{{ facility.pk }}/update">
+            <p>Update Facility</p>
+        </a>
+    {% endif %}
+    {% if user.is_authenticated and user.pk == facility.user.pk %}
+        <a href="/facilities/{{ facility.pk }}/delete">
+            <p>Delete Facility</p>
+        </a>
+    {% endif %}
     <a href="/facilities/{{ facility.id }}/add_rating">
         <p>Add Rating</p>
     </a>

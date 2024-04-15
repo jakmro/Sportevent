@@ -140,5 +140,8 @@ COMPRESS_ROOT = BASE_DIR / 'static'
 COMPRESS_ENABLED = True
 STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
 
+# CustomUser
+AUTH_USER_MODEL = "accounts.CustomUser"
+
 # Google Maps API
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')

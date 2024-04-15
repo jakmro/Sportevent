@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+    <h1>User Profile</h1>
+    <p>Username: {{ user_profile.username }}</p>
+    <p>Date of Birth: {{ user_profile.date_of_birth }}</p>
+    <p>Description: {{ user_profile.description }}</p>
+    <p>Sports: {{ user_profile.sports }}</p>
+    {% if user_profile.avatar %}
+        <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+    {% else %}
+        <p>No avatar uploaded</p>
+    {% endif %}
+    {% if user.is_authenticated and user_profile.pk == request.user.pk %}
+        <a href="/accounts/profile/{{ user_profile.pk }}/update">
+            <p>Update Profile</p>
+        </a>
+    {% endif %}
+    {% if user.is_authenticated and user_profile.pk == request.user.pk %}
+        <a href="/accounts/profile/{{ user_profile.pk }}/delete">
+            <p>Delete Profile</p>
+        </a>
+    {% endif %}
+{% endblock %}

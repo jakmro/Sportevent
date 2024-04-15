@@ -1,9 +1,12 @@
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.conf import settings
 from django.db.models import Avg
+from django.http import Http404
+from django.utils.translation import gettext as _
+
 import requests
 import json
 from .forms import FacilityForm, RatingForm
@@ -68,6 +71,41 @@ class AddRatingView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+class DeleteFacilityView(LoginRequiredMixin, DeleteView):
+    model = Facility
+    success_url = '/facilities'
+    template_name = 'facilities/delete_facility.html'
+
+    def get_object(self, queryset=None):
+        obj = super(DeleteFacilityView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                _("You don't own this object")
+            )
+        return obj
+
+class UpdateFacilityView(LoginRequiredMixin, UpdateView):
+    model = Facility
+    fields = [
+        'name',
+        'description',
+        'location',
+        'sport_type',
+        'is_indoor',
+        'contact_information'
+    ]
+    template_name = 'facilities/update_facility.html'
+    def get_success_url(self):
+        facility_id = self.kwargs.get('pk')
+        return reverse_lazy('facility', kwargs={'pk': facility_id})
+
+    def get_object(self, queryset=None):
+        obj = super(UpdateFacilityView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                _("You don't own this object")
+            )
+        return obj
 
 def get_facilities_data(request):
     facilities = list(Facility.objects.values())
