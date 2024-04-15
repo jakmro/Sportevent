@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404
-from django.db.models import Avg
+from django.db.models import Avg, Q
 from django.utils.translation import gettext
 from .utils import geocode
 from .forms import FacilityForm, RatingForm
@@ -13,6 +13,15 @@ class FacilitiesView(ListView):
     model = Facility
     template_name = 'facilities/facilities.html'
     context_object_name = 'facilities_list'
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        object_list = Facility.objects.all()
+        if query:
+            object_list = object_list.filter(
+                Q(name__contains=query) | Q(location__contains=query)
+            )
+        return object_list
 
 
 class AddFacilityView(LoginRequiredMixin, CreateView):

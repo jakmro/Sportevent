@@ -6,6 +6,12 @@
     <a href="{% url 'add_facility' %}">
         <p>Add Facility</p>
     </a>
+    <form action="{% url 'facilities' %}" method="get">
+        <label>
+            <input name="q" type="text" placeholder="Search...">
+        </label>
+        <button type="submit">Search</button>
+    </form>
     <ul>
         {% for facility in facilities_list %}
             <a href="{% url 'facility' facility.pk %}">
