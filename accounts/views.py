@@ -3,6 +3,8 @@ from django.views.generic import CreateView, DetailView, UpdateView
 from accounts.forms import CustomUserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import CustomUser
+from django.http import Http404
+from django.utils.translation import gettext as _
 
 
 class SignUpView(CreateView):
@@ -25,12 +27,14 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     ]
     template_name = 'users/update_user_profile.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['logged_in_user_id'] = self.request.user.id
-        context['profile_owner_id'] = self.object.id
-        return context
-
     def get_success_url(self):
         user_id = self.request.user.id
         return reverse_lazy('user_profile', kwargs={'pk': user_id})
+
+    def get_object(self, queryset=None):
+        obj = super(UpdateProfileView, self).get_object(queryset)
+        if obj != self.request.user:
+            raise Http404(
+                _("You don't own this profile")
+            )
+        return obj

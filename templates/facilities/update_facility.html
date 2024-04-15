@@ -3,17 +3,13 @@
 {% block title %}Update Facility{% endblock %}
 
 {% block content %}
-    {% if user.pk == facility.user.pk %}
-        <h1>Update Facility</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Update</button>
-            <a href="{{ request.META.HTTP_REFERER }}">
-                <p>Cancel</p>
-            </a>
-        </form>
-    {% else %}
-        <p>You are not owner of this object so you can't update it.</p>
-    {% endif %}
+    <h1>Update Facility</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+        <a href="{{ request.META.HTTP_REFERER }}">
+            <p>Cancel</p>
+        </a>
+    </form>
 {% endblock %}

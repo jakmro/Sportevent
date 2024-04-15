@@ -3,17 +3,15 @@
 {% block title %}Delete Facility{% endblock %}
 
 {% block content %}
-    {% if user.pk == facility.user.pk %}
-        <h1>Delete Facility</h1>
-        <form method="post">
-            {% csrf_token %}
-            <p>Are you sure you want to delete "{{ object }}"?</p>
-            <input type="submit" value="Confirm">
-            <a href="{% url 'facilities' %}">
-                <p>Cancel</p>
-            </a>
-        </form>
-    {% else %}
-        <p>You are not owner of this object so you can't delete it.</p>
-    {% endif %}
+
+    <h1>Delete Facility</h1>
+    <form method="post">
+        {% csrf_token %}
+        <p>Are you sure you want to delete "{{ object }}"?</p>
+        <input type="submit" value="Confirm">
+        <a href="{% url 'facilities' %}">
+            <p>Cancel</p>
+        </a>
+    </form>
+
 {% endblock %}

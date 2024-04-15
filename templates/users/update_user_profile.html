@@ -3,17 +3,15 @@
 {% block title %}Update Profile{% endblock %}
 
 {% block content %}
-    {% if logged_in_user_id == profile_owner_id %}
-        <h1>Update Profile</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Update</button>
-            <a href="/accounts/profile/{{ profile_owner_id }}">
-                <p>Cancel</p>
-            </a>
-        </form>
-    {% else %}
-        <p>You are not owner of this profile so you can't update it.</p>
-    {% endif %}
+
+    <h1>Update Profile</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+        <a href="{% url 'user_profile' pk=object.pk %}">
+            <p>Cancel</p>
+        </a>
+    </form>
+
 {% endblock %}

@@ -4,6 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.conf import settings
 from django.db.models import Avg
+from django.http import Http404
+from django.utils.translation import gettext as _
+
 import requests
 import json
 from .forms import FacilityForm, RatingForm
@@ -73,6 +76,14 @@ class DeleteFacilityView(LoginRequiredMixin, DeleteView):
     success_url = '/facilities'
     template_name = 'facilities/delete_facility.html'
 
+    def get_object(self, queryset=None):
+        obj = super(DeleteFacilityView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                _("You don't own this object")
+            )
+        return obj
+
 class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     model = Facility
     fields = [
@@ -87,6 +98,14 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         facility_id = self.kwargs.get('pk')
         return reverse_lazy('facility', kwargs={'pk': facility_id})
+
+    def get_object(self, queryset=None):
+        obj = super(UpdateFacilityView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                _("You don't own this object")
+            )
+        return obj
 
 def get_facilities_data(request):
     facilities = list(Facility.objects.values())
