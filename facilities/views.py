@@ -2,11 +2,9 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404
-from django.conf import settings
 from django.db.models import Avg
 from django.utils.translation import gettext
-import requests
-import json
+from .utils import geocode
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
 
@@ -25,21 +23,10 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-
         location = form.cleaned_data['location']
-        location_url_format = location.replace(' ', '+')
-
-        res = requests.get(
-            f'https://maps.googleapis.com/maps/api/geocode/json?address={location_url_format}&key={settings.GOOGLE_API_KEY}'
-        )
-        response = json.loads(res.text)
-
-        latitude = response['results'][0]['geometry']['location']['lat']
-        longitude = response['results'][0]['geometry']['location']['lng']
-
+        latitude, longitude = geocode(location)
         form.instance.latitude = latitude
         form.instance.longitude = longitude
-
         return super().form_valid(form)
 
 
@@ -106,6 +93,13 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
                 gettext("You don't own this object")
             )
         return obj
+
+    def form_valid(self, form):
+        location = form.cleaned_data['location']
+        latitude, longitude = geocode(location)
+        form.instance.latitude = latitude
+        form.instance.longitude = longitude
+        return super().form_valid(form)
 
 
 def get_facilities_data(request):
