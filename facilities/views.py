@@ -19,8 +19,10 @@ class FacilitiesView(ListView):
         object_list = Facility.objects.all()
         if query:
             object_list = object_list.filter(
-                Q(name__contains=query) | Q(description__contains=query) | Q(location__contains=query) | Q(
-                    sport_type__contains=query)
+                Q(name__contains=query) |
+                Q(description__contains=query) |
+                Q(location__contains=query) |
+                Q(sport_type__contains=query)
             )
         return object_list
 

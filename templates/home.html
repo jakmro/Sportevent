@@ -3,5 +3,10 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    Home
+    <form action="{% url 'facilities' %}" method="get">
+        <label>
+            <input name="q" type="text" placeholder="Search...">
+        </label>
+        <button type="submit">Search</button>
+    </form>
 {% endblock %}
