@@ -40,12 +40,17 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
         latitude, longitude = geocode(location)
 
         if latitude is None and longitude is None:
-            form.add_error('location', gettext('Invalid location'))
+            form.add_error('location', gettext('Invalid location.'))
             return self.form_invalid(form)
 
         form.instance.latitude = latitude
         form.instance.longitude = longitude
-        return super().form_valid(form)
+
+        try:
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error('location', 'We already have an object in this location.')
+            return self.form_invalid(form)
 
 
 class FacilityView(DetailView):
@@ -129,12 +134,17 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
         latitude, longitude = geocode(location)
 
         if latitude is None and longitude is None:
-            form.add_error('location', gettext('Invalid location'))
+            form.add_error('location', gettext('Invalid location.'))
             return self.form_invalid(form)
 
         form.instance.latitude = latitude
         form.instance.longitude = longitude
-        return super().form_valid(form)
+
+        try:
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error('location', 'We already have an object in this location.')
+            return self.form_invalid(form)
 
 
 def get_facilities_data(request):

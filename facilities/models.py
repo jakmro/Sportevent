@@ -19,6 +19,9 @@ class Facility(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        unique_together = ('latitude', 'longitude')
+
 
 class Rating(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
