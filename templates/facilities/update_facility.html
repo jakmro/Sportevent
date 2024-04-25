@@ -8,8 +8,8 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Update</button>
-        <a href="{{ request.META.HTTP_REFERER }}">
-            <p>Cancel</p>
-        </a>
     </form>
+    <a href="{% url 'facility' object.pk %}">
+        <p>Cancel</p>
+    </a>
 {% endblock %}

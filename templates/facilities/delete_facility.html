@@ -8,8 +8,8 @@
         {% csrf_token %}
         <p>Are you sure you want to delete "{{ object }}"?</p>
         <input type="submit" value="Confirm">
-        <a href="{% url 'facilities' %}">
-            <p>Cancel</p>
-        </a>
     </form>
+    <a href="{% url 'facility' object.pk %}">
+        <p>Cancel</p>
+    </a>
 {% endblock %}
