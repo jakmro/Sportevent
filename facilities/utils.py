@@ -11,7 +11,10 @@ def geocode(location):
     )
     response = json.loads(res.text)
 
-    latitude = response['results'][0]['geometry']['location']['lat']
-    longitude = response['results'][0]['geometry']['location']['lng']
+    try:
+        latitude = response['results'][0]['geometry']['location']['lat']
+        longitude = response['results'][0]['geometry']['location']['lng']
+    except IndexError:
+        latitude, longitude = None, None
 
     return latitude, longitude

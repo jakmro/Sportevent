@@ -27,13 +27,23 @@
             <p>Delete Facility</p>
         </a>
     {% endif %}
-    <a href="{% url 'add_rating' facility.pk %}">
-        <p>Add Rating</p>
-    </a>
+    {% if not user_rating %}
+        <a href="{% url 'add_rating' facility.pk %}">
+            <p>Add Rating</p>
+        </a>
+    {% endif %}
     {% for rating in ratings %}
         <p>{{ rating.user }}</p>
         <p>{{ rating.rating }}</p>
         <p>{{ rating.comment }}</p>
         <p>{{ rating.date }}</p>
+        {% if rating == user_rating %}
+            <a href="{% url 'update_rating' rating.pk %}">
+                <p>Update Rating</p>
+            </a>
+            <a href="{% url 'delete_rating' rating.pk %}">
+                <p>Delete Rating</p>
+            </a>
+        {% endif %}
     {% endfor %}
 {% endblock %}

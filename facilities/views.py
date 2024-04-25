@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404
 from django.db.models import Avg, Q
 from django.utils.translation import gettext
+from django.db import IntegrityError
 from .utils import geocode
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
@@ -15,7 +16,7 @@ class FacilitiesView(ListView):
     context_object_name = 'facilities_list'
 
     def get_queryset(self):
-        query = self.request.GET.get("q")
+        query = self.request.GET.get('q')
         object_list = Facility.objects.all()
         if query:
             object_list = object_list.filter(
@@ -37,6 +38,11 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         location = form.cleaned_data['location']
         latitude, longitude = geocode(location)
+
+        if latitude is None and longitude is None:
+            form.add_error('location', gettext('Invalid location'))
+            return self.form_invalid(form)
+
         form.instance.latitude = latitude
         form.instance.longitude = longitude
         return super().form_valid(form)
@@ -49,6 +55,12 @@ class FacilityView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ratings'] = Rating.objects.filter(facility=self.get_object().id)
+
+        try:
+            context['user_rating'] = Rating.objects.get(user=self.get_object().user.id)
+        except Rating.DoesNotExist:
+            context['user_rating'] = None
+
         return context
 
 
@@ -65,7 +77,12 @@ class AddRatingView(LoginRequiredMixin, CreateView):
         facility_id = self.kwargs.get('facility_id')
         form.instance.facility = Facility.objects.get(id=facility_id)
         form.instance.user = self.request.user
-        return super().form_valid(form)
+
+        try:
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error(None, 'You can rate the same facility only once.')
+            return self.form_invalid(form)
 
 
 class DeleteFacilityView(LoginRequiredMixin, DeleteView):
@@ -110,6 +127,11 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         location = form.cleaned_data['location']
         latitude, longitude = geocode(location)
+
+        if latitude is None and longitude is None:
+            form.add_error('location', gettext('Invalid location'))
+            return self.form_invalid(form)
+
         form.instance.latitude = latitude
         form.instance.longitude = longitude
         return super().form_valid(form)
@@ -125,3 +147,47 @@ def get_facilities_data(request):
             rounded_rating = 'No ratings'
         facilities[i]['rating'] = rounded_rating
     return JsonResponse(facilities, safe=False)
+
+
+class UpdateRatingView(LoginRequiredMixin, UpdateView):
+    model = Rating
+    fields = [
+        'rating',
+        'comment',
+    ]
+    template_name = 'facilities/update_rating.html'
+
+    def get_success_url(self):
+        facility_id = self.get_object().facility.id
+        return reverse_lazy('facility', kwargs={'pk': facility_id})
+
+    def get_object(self, queryset=None):
+        obj = super(UpdateRatingView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                gettext("It's not your rating.")
+            )
+        return obj
+
+
+class DeleteRatingView(LoginRequiredMixin, DeleteView):
+    model = Rating
+    template_name = 'facilities/delete_rating.html'
+
+    def __init__(self, *args, **kwargs):
+        self.facility_id = None
+        super(DeleteRatingView, self).__init__(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('facility', kwargs={'pk': self.facility_id})
+
+    def get_object(self, queryset=None):
+        obj = super(DeleteRatingView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                gettext("It's not your rating.")
+            )
+        # saving facility_id for future use
+        self.facility_id = obj.facility.id
+
+        return obj

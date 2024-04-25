@@ -31,3 +31,9 @@ class Rating(models.Model):
     )
     comment = models.TextField(blank=True)
     date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Rating: {self.rating} Comment: {self.comment}'
+
+    class Meta:
+        unique_together = ('user', 'facility')
