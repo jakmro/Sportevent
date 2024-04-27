@@ -3,5 +3,17 @@
 {% block title %}Events<{% endblock %}
 
 {% block content %}
-    Hello world!
+    <a href="{% url 'add_event' %}">
+        <p>Add Event</p>
+    </a>
+    <ul>
+        {% for event in events_list %}
+            <p>{{ event.name }} </p>
+            <p>{{ event.description }}</p>
+            <p>{{ event.date }}</p>
+            <p>{{ event.facility }}</p>
+            <p>{{ event.sport_type }}</p>
+
+        {% endfor %}
+    </ul>
 {% endblock %}

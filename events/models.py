@@ -8,7 +8,7 @@ class Event(models.Model):
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField()
     sport_type = models.CharField(max_length=128)
-    date = models.DateField()
+    date = models.DateTimeField()
     is_cyclic = models.BooleanField()
     max_people_no = models.IntegerField()
     min_people_no = models.IntegerField()
