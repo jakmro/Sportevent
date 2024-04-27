@@ -6,6 +6,12 @@
     <a href="{% url 'add_event' %}">
         <p>Add Event</p>
     </a>
+    <form action="{% url 'events' %}" method="get">
+        <label>
+            <input name="q" type="text" placeholder="Search...">
+        </label>
+        <button type="submit">Search</button>
+    </form>
     <ul>
         {% for event in events_list %}
             <a href="{% url 'event' event.pk %}">

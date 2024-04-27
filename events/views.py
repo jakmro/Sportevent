@@ -1,8 +1,9 @@
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, Http404
+from django.http import Http404
 from django.utils.translation import gettext
+from django.db.models import Q
 
 from .forms import EventForm
 from .models import Event
@@ -12,6 +13,18 @@ class EventsView(LoginRequiredMixin, ListView):
     model = Event
     template_name = 'events/events.html'
     context_object_name = 'events_list'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Event.objects.all()
+        if query:
+            object_list = object_list.filter(
+                Q(name__contains=query) |
+                Q(description__contains=query) |
+                Q(sport_type__contains=query)
+            )
+        return object_list
+
 
 class EventView(DetailView):
     model = Event
