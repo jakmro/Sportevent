@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404
@@ -12,6 +12,14 @@ class EventsView(LoginRequiredMixin, ListView):
     model = Event
     template_name = 'events/events.html'
     context_object_name = 'events_list'
+
+class EventView(DetailView):
+    model = Event
+    template_name = 'events/event.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 class AddEventView(LoginRequiredMixin, CreateView):
     model = Event
@@ -34,7 +42,10 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         'is_cyclic'
     ]
     template_name = 'events/update_event.html'
-    success_url = reverse_lazy('events')
+
+    def get_success_url(self):
+        event_id = self.get_object().id
+        return reverse_lazy('event', kwargs={'pk': event_id})
 
     def get_object(self, queryset=None):
         obj = super(UpdateEventView, self).get_object(queryset)
