@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404
@@ -52,5 +52,18 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your event.")
+            )
+        return obj
+
+class DeleteEventView(LoginRequiredMixin, DeleteView):
+    model = Event
+    success_url = '/events'
+    template_name = 'events/delete_event.html'
+
+    def get_object(self, queryset=None):
+        obj = super(DeleteEventView, self).get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                gettext("You don't own this event")
             )
         return obj
