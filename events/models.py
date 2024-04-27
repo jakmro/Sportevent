@@ -16,3 +16,8 @@ class Event(models.Model):
     def __str__(self):
         return self.name
 
+class EventRegistration(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('user', 'event')

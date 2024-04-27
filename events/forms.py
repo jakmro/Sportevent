@@ -1,5 +1,5 @@
 from django.forms import ModelForm, DateTimeInput
-from .models import Event
+from .models import Event, EventRegistration
 
 
 class EventForm(ModelForm):
@@ -19,3 +19,7 @@ class EventForm(ModelForm):
             'date': DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M')
         }
 
+class EventRegistrationForm(ModelForm):
+    class Meta:
+        model = EventRegistration
+        fields = []

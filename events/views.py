@@ -1,3 +1,5 @@
+from sqlite3 import IntegrityError
+
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -5,8 +7,8 @@ from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
 
-from .forms import EventForm
-from .models import Event
+from .forms import EventForm, EventRegistrationForm
+from .models import Event, EventRegistration
 
 
 class EventsView(LoginRequiredMixin, ListView):
@@ -80,3 +82,30 @@ class DeleteEventView(LoginRequiredMixin, DeleteView):
                 gettext("You don't own this event")
             )
         return obj
+
+class EventRegistrationView(LoginRequiredMixin, CreateView):
+    model = EventRegistration
+    form_class = EventRegistrationForm
+    template_name = 'events/register_for_event.html'
+
+    def get_success_url(self):
+        event_id = self.kwargs.get('pk')
+        return reverse_lazy('event', kwargs={'pk': event_id})
+
+    def form_valid(self, form):
+        event_id = self.kwargs.get('pk')
+        form.instance.event = Event.objects.get(id=event_id)
+        form.instance.user = self.request.user
+
+        try:
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error(None, 'You cant register for the same event twice.')
+            return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        event_id = self.kwargs.get('pk')
+        event = Event.objects.get(pk=event_id)
+        context['event'] = event
+        return context
