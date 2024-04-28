@@ -5,7 +5,8 @@ from .views import (
     AddEventView,
     UpdateEventView,
     DeleteEventView,
-    EventRegistrationView
+    AddRegistrationView,
+    DeleteRegistrationView
 )
 
 urlpatterns = [
@@ -14,5 +15,6 @@ urlpatterns = [
     path('add/', AddEventView.as_view(), name='add_event'),
     path('<int:pk>/update/', UpdateEventView.as_view(), name='update_event'),
     path('<int:pk>/delete/', DeleteEventView.as_view(), name='delete_event'),
-    path('<int:pk>/register/', EventRegistrationView.as_view(), name='register_for_event')
+    path('<int:event_id>/add_registration/', AddRegistrationView.as_view(), name='add_registration'),
+    path('<int:pk>/delete_registration/', DeleteRegistrationView.as_view(), name='delete_registration'),
 ]

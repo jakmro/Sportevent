@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from accounts.models import CustomUser
 from facilities.models import Facility
 
@@ -9,10 +10,19 @@ class Event(models.Model):
     name = models.CharField(max_length=128, unique=True)
     description = models.TextField()
     sport_type = models.CharField(max_length=128)
-    date = models.DateTimeField()
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
     is_cyclic = models.BooleanField()
-    max_people_no = models.IntegerField()
-    min_people_no = models.IntegerField()
+    min_people_no = models.IntegerField(
+        validators=[
+            MinValueValidator(1)
+        ]
+    )
+    max_people_no = models.IntegerField(
+        validators=[
+            MinValueValidator(1)
+        ]
+    )
 
     def __str__(self):
         return self.name

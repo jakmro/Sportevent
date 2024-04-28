@@ -4,23 +4,33 @@
 
 {% block content %}
     <h2>{{ event.name }}</h2>
-    <p>{{ event.description }}</p>
     <p>{{ event.facility }}</p>
+    <p>{{ event.description }}</p>
     <p>{{ event.sport_type }}</p>
-    <p>{{ event.date }}</p>
+    <p>{{ event.start_datetime }}</p>
+    <p>{{ event.end_datetime }}</p>
     {% if facility.is_cyclic %}
         <p>Cyclic</p>
     {% else %}
         <p>NonCyclic</p>
     {% endif %}
-    <p>{{ event.max_people_no }}</p>
     <p>{{ event.min_people_no }}</p>
+    <p>{{ event.max_people_no }}</p>
+    {% if user.is_authenticated %}
+        {% if not registration %}
+            <a href="{% url 'add_registration' event.pk %}">
+                <p>Register</p>
+            </a>
+        {% else %}
+            <a href="{% url 'delete_registration' registration.pk %}">
+                <p>Unregister</p>
+            </a>
+        {% endif %}
+    {% endif %}
     {% if user.is_authenticated and user.pk == event.user.pk %}
         <a href="{% url 'update_event' event.pk %}">
             <p>Update Event</p>
         </a>
-    {% endif %}
-    {% if user.is_authenticated and user.pk == event.user.pk %}
         <a href="{% url 'delete_event' event.pk %}">
             <p>Delete Event</p>
         </a>

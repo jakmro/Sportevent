@@ -10,13 +10,15 @@ class EventForm(ModelForm):
             'facility',
             'description',
             'sport_type',
-            'date',
+            'start_datetime',
+            'end_datetime',
             'is_cyclic',
-            'max_people_no',
-            'min_people_no'
+            'min_people_no',
+            'max_people_no'
         ]
         widgets = {
-            'date': DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M')
+            'start_datetime': DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'end_datetime': DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M')
         }
 
 
