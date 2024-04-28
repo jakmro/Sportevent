@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Events<{% endblock %}
+
+{% block content %}
+    <a href="{% url 'add_event' %}">
+        <p>Add Event</p>
+    </a>
+    <form action="{% url 'events' %}" method="get">
+        <label>
+            <input name="q" type="text" placeholder="Search...">
+        </label>
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for event in events_list %}
+            <a href="{% url 'event' event.pk %}">
+                <h2>{{ event.name }}</h2>
+            </a>
+            <p>{{ event.description }}</p>
+            <p>{{ event.date }}</p>
+            <p>{{ event.facility }}</p>
+            <p>{{ event.sport_type }}</p>
+        {% endfor %}
+    </ul>
+{% endblock %}

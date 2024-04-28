@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Registration{% endblock %}
+
+{% block content %}
+    <h1>Delete Registration</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p>Are you sure you want to delete registration for this event: "{{ object.event }}"?</p>
+        <input type="submit" value="Confirm">
+    </form>
+    <a href="{% url 'event' object.event_id %}">
+        <p>Cancel</p>
+    </a>
+{% endblock %}
