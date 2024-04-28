@@ -19,6 +19,7 @@ class EventForm(ModelForm):
             'date': DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M')
         }
 
+
 class EventRegistrationForm(ModelForm):
     class Meta:
         model = EventRegistration

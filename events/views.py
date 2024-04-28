@@ -1,12 +1,10 @@
-from sqlite3 import IntegrityError
-
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
-
+from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration
 
@@ -36,14 +34,17 @@ class EventView(DetailView):
         context = super().get_context_data(**kwargs)
         return context
 
+
 class AddEventView(LoginRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     template_name = 'events/add_event.html'
     success_url = reverse_lazy('events')
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
 
 class UpdateEventView(LoginRequiredMixin, UpdateView):
     model = Event
@@ -70,6 +71,7 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
             )
         return obj
 
+
 class DeleteEventView(LoginRequiredMixin, DeleteView):
     model = Event
     success_url = '/events'
@@ -82,6 +84,7 @@ class DeleteEventView(LoginRequiredMixin, DeleteView):
                 gettext("You don't own this event")
             )
         return obj
+
 
 class EventRegistrationView(LoginRequiredMixin, CreateView):
     model = EventRegistration

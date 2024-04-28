@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import CustomUser
 from facilities.models import Facility
 
+
 class Event(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     facility = models.ForeignKey(Facility, on_delete=models.CASCADE)
@@ -16,8 +17,10 @@ class Event(models.Model):
     def __str__(self):
         return self.name
 
+
 class EventRegistration(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
     class Meta:
         unique_together = ('user', 'event')

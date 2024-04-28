@@ -25,9 +25,9 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('events/', include('events.urls')),
     path('facilities/', include('facilities.urls')),
-    path('maps/', include('maps.urls')),
-    path('events/', include('events.urls'))
+    path('maps/', include('maps.urls'))
 ]
 
 if settings.DEBUG:
