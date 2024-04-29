@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
+from django.utils import timezone
 from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
 from .helpers import event_overlap
@@ -55,6 +56,11 @@ class AddEventView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         start_datetime = form.cleaned_data['start_datetime']
         end_datetime = form.cleaned_data['end_datetime']
+
+        if start_datetime < timezone.now():
+            form.add_error('start_datetime', 'Events cannot start in the past.')
+            return self.form_invalid(form)
+
         if start_datetime > end_datetime:
             form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
             return self.form_invalid(form)
@@ -105,6 +111,11 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         start_datetime = form.cleaned_data['start_datetime']
         end_datetime = form.cleaned_data['end_datetime']
+
+        if start_datetime < timezone.now():
+            form.add_error('start_datetime', 'Events cannot start in the past.')
+            return self.form_invalid(form)
+
         if start_datetime > end_datetime:
             form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
             return self.form_invalid(form)
