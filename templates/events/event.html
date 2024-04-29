@@ -4,7 +4,9 @@
 
 {% block content %}
     <h2>{{ event.name }}</h2>
-    <p>{{ event.facility }}</p>
+    <a href="{% url 'facility' event.facility.pk %}">
+        <p>{{ event.facility }}</p>
+    </a>
     <p>{{ event.description }}</p>
     <p>{{ event.sport_type }}</p>
     <p>{{ event.start_datetime }}</p>
@@ -35,4 +37,9 @@
             <p>Delete Event</p>
         </a>
     {% endif %}
+    {% for registration in registrations %}
+        <a href="{% url 'user_profile' registration.user.pk %}">
+            <p>{{ registration.user }}</p>
+        </a>
+    {% endfor %}
 {% endblock %}

@@ -5,6 +5,7 @@ from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
 from sqlite3 import IntegrityError
+
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration
 
@@ -34,6 +35,7 @@ class EventView(DetailView):
         context = super().get_context_data(**kwargs)
         event_id = self.get_object().id
         user_id = self.request.user.id
+        context['registrations'] = EventRegistration.objects.filter(event=event_id)
 
         try:
             context['registration'] = EventRegistration.objects.get(user_id=user_id, event_id=event_id)
