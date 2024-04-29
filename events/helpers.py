@@ -3,13 +3,12 @@ from datetime import timedelta
 from events.models import Event
 
 
-def event_overlap(self, form):
+def event_overlap(self, form, current_event):
     is_cyclic = form.cleaned_data['is_cyclic']
-
     facility_events = Event.objects.filter(facility=form.cleaned_data['facility'])
 
     for event in facility_events:
-        if event == self.get_object():
+        if event == current_event:
             continue
 
         start_datetime = form.cleaned_data['start_datetime']
