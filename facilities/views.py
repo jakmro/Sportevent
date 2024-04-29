@@ -5,6 +5,8 @@ from django.http import JsonResponse, Http404
 from django.db.models import Avg, Q
 from django.utils.translation import gettext
 from django.db import IntegrityError
+
+from events.models import Event
 from .utils import geocode
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
@@ -60,6 +62,7 @@ class FacilityView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ratings'] = Rating.objects.filter(facility=self.get_object().id)
+        context['events'] = Event.objects.filter(facility=self.get_object().id)
 
         try:
             context['user_rating'] = Rating.objects.get(user=self.get_object().user.id)
