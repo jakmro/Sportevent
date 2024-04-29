@@ -21,11 +21,11 @@
             <p>Delete Profile</p>
         </a>
         <form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit"
-                class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
-            Log out
-        </button>
-    </form>
+            {% csrf_token %}
+            <button type="submit"
+                    class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                Log out
+            </button>
+        </form>
     {% endif %}
 {% endblock %}

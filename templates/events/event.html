@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>{{ event.name }}</h2>
-    <a href="{% url 'facility' event.facility.pk %}">
+    <a href="{% url 'facility' event.facility_id %}">
         <p>{{ event.facility }}</p>
     </a>
     <p>{{ event.description }}</p>
