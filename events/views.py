@@ -5,8 +5,8 @@ from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
 from sqlite3 import IntegrityError
-from datetime import timedelta
 from .forms import EventForm, EventRegistrationForm
+from .helpers import event_overlap
 from .models import Event, EventRegistration
 
 
@@ -53,7 +53,6 @@ class AddEventView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-
         start_datetime = form.cleaned_data['start_datetime']
         end_datetime = form.cleaned_data['end_datetime']
         if start_datetime > end_datetime:
@@ -66,38 +65,12 @@ class AddEventView(LoginRequiredMixin, CreateView):
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
             return self.form_invalid(form)
 
-        is_cyclic = form.cleaned_data['is_cyclic']
-
-        facility_events = Event.objects.filter(facility=form.cleaned_data['facility'])
-
-        for event in facility_events:
-            if event == self.get_object():
-                continue
-
-            start_datetime = form.cleaned_data['start_datetime']
-            end_datetime = form.cleaned_data['end_datetime']
-
-            event_start_datetime = event.start_datetime
-            event_end_datetime = event.end_datetime
-
-            if is_cyclic and start_datetime < event_end_datetime:
-                day_diff = (event_end_datetime - start_datetime).days
-                to_add = day_diff // 7 * 7
-                start_datetime += timedelta(days=to_add)
-                end_datetime += timedelta(days=to_add)
-
-            if event.is_cyclic and event_start_datetime < end_datetime:
-                day_diff = (end_datetime - event_start_datetime).days
-                to_add = day_diff // 7 * 7
-                event_start_datetime += timedelta(days=to_add)
-                event_end_datetime += timedelta(days=to_add)
-
-            if start_datetime < event_end_datetime and end_datetime > event_start_datetime:
-                form.add_error(
-                    None,
-                    'There is already an event at this time at this place.'
-                )
-                return self.form_invalid(form)
+        if event_overlap(self, form):
+            form.add_error(
+                None,
+                'There is already an event at this time at this place.'
+            )
+            return self.form_invalid(form)
 
         return super().form_valid(form)
 
@@ -142,38 +115,12 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
             return self.form_invalid(form)
 
-        is_cyclic = form.cleaned_data['is_cyclic']
-
-        facility_events = Event.objects.filter(facility=form.cleaned_data['facility'])
-
-        for event in facility_events:
-            if event == self.get_object():
-                continue
-
-            start_datetime = form.cleaned_data['start_datetime']
-            end_datetime = form.cleaned_data['end_datetime']
-
-            event_start_datetime = event.start_datetime
-            event_end_datetime = event.end_datetime
-
-            if is_cyclic and start_datetime < event_end_datetime:
-                day_diff = (event_end_datetime - start_datetime).days
-                to_add = day_diff // 7 * 7
-                start_datetime += timedelta(days=to_add)
-                end_datetime += timedelta(days=to_add)
-
-            if event.is_cyclic and event_start_datetime < end_datetime:
-                day_diff = (end_datetime - event_start_datetime).days
-                to_add = day_diff // 7 * 7
-                event_start_datetime += timedelta(days=to_add)
-                event_end_datetime += timedelta(days=to_add)
-
-            if start_datetime < event_end_datetime and end_datetime > event_start_datetime:
-                form.add_error(
-                    None,
-                    'There is already an event at this time at this place.'
-                )
-                return self.form_invalid(form)
+        if event_overlap(self, form):
+            form.add_error(
+                None,
+                'There is already an event at this time at this place.'
+            )
+            return self.form_invalid(form)
 
         return super().form_valid(form)
 

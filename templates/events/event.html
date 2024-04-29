@@ -11,7 +11,7 @@
     <p>{{ event.sport_type }}</p>
     <p>{{ event.start_datetime }}</p>
     <p>{{ event.end_datetime }}</p>
-    {% if facility.is_cyclic %}
+    {% if event.is_cyclic %}
         <p>Cyclic</p>
     {% else %}
         <p>NonCyclic</p>
