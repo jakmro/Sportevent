@@ -35,7 +35,7 @@ class EventView(DetailView):
         context = super().get_context_data(**kwargs)
         event_id = self.get_object().id
         user_id = self.request.user.id
-        context['users_registered'] = EventRegistration.objects.filter(event=event_id)
+        context['registrations'] = EventRegistration.objects.filter(event=event_id)
 
         try:
             context['registration'] = EventRegistration.objects.get(user_id=user_id, event_id=event_id)

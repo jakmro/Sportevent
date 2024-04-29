@@ -37,9 +37,9 @@
             <p>Delete Event</p>
         </a>
     {% endif %}
-    {% for user in users_registered %}
-        <a href="{% url 'user_profile' user.user.pk %}">
-            <p>{{ user.user }}</p>
+    {% for registration in registrations %}
+        <a href="{% url 'user_profile' registration.user.pk %}">
+            <p>{{ registration.user }}</p>
         </a>
     {% endfor %}
 {% endblock %}
