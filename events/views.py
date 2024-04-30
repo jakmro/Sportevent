@@ -91,7 +91,7 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('event', kwargs={'pk': event_id})
 
     def get_object(self, queryset=None):
-        obj = super(UpdateEventView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your event.")
@@ -132,7 +132,7 @@ class DeleteEventView(LoginRequiredMixin, DeleteView):
     template_name = 'events/delete_event.html'
 
     def get_object(self, queryset=None):
-        obj = super(DeleteEventView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your event.")
@@ -193,14 +193,14 @@ class DeleteRegistrationView(LoginRequiredMixin, DeleteView):
     template_name = 'events/delete_registration.html'
 
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.event_id = None
-        super(DeleteRegistrationView, self).__init__(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('event', kwargs={'pk': self.event_id})
 
     def get_object(self, queryset=None):
-        obj = super(DeleteRegistrationView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your event registration.")

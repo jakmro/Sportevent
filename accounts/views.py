@@ -34,7 +34,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('user_profile', kwargs={'pk': user_id})
 
     def get_object(self, queryset=None):
-        obj = super(UpdateProfileView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj != self.request.user:
             raise Http404(
                 gettext("You don't own this profile")
@@ -48,7 +48,7 @@ class DeleteProfileView(LoginRequiredMixin, DeleteView):
     template_name = 'users/delete_user_profile.html'
 
     def get_object(self, queryset=None):
-        obj = super(DeleteProfileView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj != self.request.user:
             raise Http404(
                 gettext("You don't own this profile")

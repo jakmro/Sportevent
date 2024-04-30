@@ -99,7 +99,7 @@ class DeleteFacilityView(LoginRequiredMixin, DeleteView):
     template_name = 'facilities/delete_facility.html'
 
     def get_object(self, queryset=None):
-        obj = super(DeleteFacilityView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("You don't own this object")
@@ -125,7 +125,7 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('facility', kwargs={'pk': facility_id})
 
     def get_object(self, queryset=None):
-        obj = super(UpdateFacilityView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("You don't own this object")
@@ -175,7 +175,7 @@ class UpdateRatingView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('facility', kwargs={'pk': facility_id})
 
     def get_object(self, queryset=None):
-        obj = super(UpdateRatingView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your rating.")
@@ -189,13 +189,13 @@ class DeleteRatingView(LoginRequiredMixin, DeleteView):
 
     def __init__(self, *args, **kwargs):
         self.facility_id = None
-        super(DeleteRatingView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('facility', kwargs={'pk': self.facility_id})
 
     def get_object(self, queryset=None):
-        obj = super(DeleteRatingView, self).get_object(queryset)
+        obj = super().get_object(queryset)
         if obj.user != self.request.user:
             raise Http404(
                 gettext("It's not your rating.")
