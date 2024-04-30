@@ -4,9 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
+from django.utils import timezone
 from sqlite3 import IntegrityError
-
 from .forms import EventForm, EventRegistrationForm
+from .helpers import event_overlap
 from .models import Event, EventRegistration
 
 
@@ -56,15 +57,25 @@ class AddEventView(LoginRequiredMixin, CreateView):
         start_datetime = form.cleaned_data['start_datetime']
         end_datetime = form.cleaned_data['end_datetime']
 
+        if start_datetime < timezone.now():
+            form.add_error('start_datetime', 'Events cannot start in the past.')
+            return self.form_invalid(form)
+
         if start_datetime > end_datetime:
             form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
             return self.form_invalid(form)
 
         min_people_no = form.cleaned_data['min_people_no']
         max_people_no = form.cleaned_data['max_people_no']
-
         if min_people_no > max_people_no:
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
+            return self.form_invalid(form)
+
+        if event_overlap(self, form, None):
+            form.add_error(
+                None,
+                'There is already an event at this time at this place.'
+            )
             return self.form_invalid(form)
 
         return super().form_valid(form)
@@ -101,15 +112,25 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         start_datetime = form.cleaned_data['start_datetime']
         end_datetime = form.cleaned_data['end_datetime']
 
+        if start_datetime < timezone.now():
+            form.add_error('start_datetime', 'Events cannot start in the past.')
+            return self.form_invalid(form)
+
         if start_datetime > end_datetime:
             form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
             return self.form_invalid(form)
 
         min_people_no = form.cleaned_data['min_people_no']
         max_people_no = form.cleaned_data['max_people_no']
-
         if min_people_no > max_people_no:
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
+            return self.form_invalid(form)
+
+        if event_overlap(self, form, self.get_object()):
+            form.add_error(
+                None,
+                'There is already an event at this time at this place.'
+            )
             return self.form_invalid(form)
 
         return super().form_valid(form)
@@ -139,14 +160,34 @@ class AddRegistrationView(LoginRequiredMixin, CreateView):
         return reverse_lazy('event', kwargs={'pk': event_id})
 
     def form_valid(self, form):
-        event_id = self.kwargs.get('event_id')
-        form.instance.event = Event.objects.get(id=event_id)
         form.instance.user = self.request.user
+        event_id = self.kwargs.get('event_id')
+        event = Event.objects.get(id=event_id)
+        form.instance.event = event
+
+        user_registrations = EventRegistration.objects.filter(user=self.request.user)
+        for registration in user_registrations:
+            start = registration.event.start_datetime
+            end = registration.event.end_datetime
+            if event.start_datetime < end and event.end_datetime > start:
+                form.add_error(
+                    None,
+                    'You are registered for an event that is taking place at the same time.'
+                )
+                return self.form_invalid(form)
+
+        registrations_for_event = EventRegistration.objects.filter(event=event)
+        if len(registrations_for_event) >= event.max_people_no:
+            form.add_error(
+                None,
+                'Max people no of people has been reached.'
+            )
+            return self.form_invalid(form)
 
         try:
             return super().form_valid(form)
         except IntegrityError:
-            form.add_error(None, "You are already registered for this event.")
+            form.add_error(None, 'You are already registered for this event.')
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
