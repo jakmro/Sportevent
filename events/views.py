@@ -83,17 +83,7 @@ class AddEventView(LoginRequiredMixin, CreateView):
 
 class UpdateEventView(LoginRequiredMixin, UpdateView):
     model = Event
-    fields = [
-        'name',
-        'facility',
-        'description',
-        'sport_type',
-        'start_datetime',
-        'end_datetime',
-        'is_cyclic',
-        'min_people_no',
-        'max_people_no'
-    ]
+    form_class = EventForm
     template_name = 'events/update_event.html'
 
     def get_success_url(self):
