@@ -71,7 +71,7 @@ class AddEventView(LoginRequiredMixin, CreateView):
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
             return self.form_invalid(form)
 
-        if event_overlap(self, form, None):
+        if event_overlap(form, None):
             form.add_error(
                 None,
                 'There is already an event at this time at this place.'
@@ -116,7 +116,7 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
             form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
             return self.form_invalid(form)
 
-        if event_overlap(self, form, self.get_object()):
+        if event_overlap(form, self.get_object()):
             form.add_error(
                 None,
                 'There is already an event at this time at this place.'

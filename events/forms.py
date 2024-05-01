@@ -12,7 +12,7 @@ class EventForm(ModelForm):
             'sport_type',
             'start_datetime',
             'end_datetime',
-            'is_cyclic',
+            'repeat_every_n_days',
             'min_people_no',
             'max_people_no'
         ]

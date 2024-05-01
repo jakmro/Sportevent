@@ -10,5 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         now = timezone.now()
         threshold = now - timedelta(days=1)
-        Event.objects.filter(end_datetime__lt=threshold, is_cyclic=False).delete()
-        self.stdout.write(f'Deleted old events')
+        old_events = Event.objects.filter(end_datetime__lt=threshold, repeat_every_n_days=None)
+        n = len(old_events)
+        old_events.delete()
+        self.stdout.write(f'Deleted {n} events')
