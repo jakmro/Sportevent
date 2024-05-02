@@ -12,7 +12,13 @@ class Event(models.Model):
     sport_type = models.CharField(max_length=128)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
-    is_cyclic = models.BooleanField()
+    repeat_every_n_days = models.IntegerField(
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(1)
+        ]
+    )
     min_people_no = models.IntegerField(
         validators=[
             MinValueValidator(1)

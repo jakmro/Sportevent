@@ -11,10 +11,10 @@
     <p>{{ event.sport_type }}</p>
     <p>{{ event.start_datetime }}</p>
     <p>{{ event.end_datetime }}</p>
-    {% if event.is_cyclic %}
-        <p>Cyclic</p>
+    {% if event.repeat_every_n_days %}
+        <p>Repeat every {{ event.repeat_every_n_days }} days</p>
     {% else %}
-        <p>NonCyclic</p>
+        <p>Doesn't repeat</p>
     {% endif %}
     <p>{{ event.min_people_no }}</p>
     <p>{{ event.max_people_no }}</p>
