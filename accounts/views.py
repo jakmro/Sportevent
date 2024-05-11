@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from accounts.forms import CustomUserCreationForm
+from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import CustomUser
 from django.http import Http404
@@ -21,12 +21,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     model = CustomUser
-    fields = [
-        'date_of_birth',
-        'description',
-        'sports',
-        'avatar'
-    ]
+    form_class = CustomUserChangeForm
     template_name = 'users/update_user_profile.html'
 
     def get_success_url(self):
