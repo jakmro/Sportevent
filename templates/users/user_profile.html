@@ -5,6 +5,10 @@
 {% block content %}
     <h1>User Profile</h1>
     <p>Username: {{ user_profile.username }}</p>
+    {% if not user_profile.email_verified %}
+        <p>Verify your email address by clicking the link sent to you</p>
+    {% endif %}
+    <p>Email: {{ user_profile.email }}</p>
     <p>Date of Birth: {{ user_profile.date_of_birth }}</p>
     <p>Description: {{ user_profile.description }}</p>
     <p>Sports: {{ user_profile.sports }}</p>
