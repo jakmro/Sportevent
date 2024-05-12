@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import certifi
 
 # loading .env file
 load_dotenv()
@@ -130,9 +131,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-# email
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 # images
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -147,3 +145,16 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 
 # Google Maps API
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+
+# SSL certificate
+os.environ['SSL_CERT_FILE'] = certifi.where()
+
+# email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = "SportEvent"
+EMAIL_HOST_USER = os.environ.get('EMAIL_ADDRESS')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')

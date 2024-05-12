@@ -9,6 +9,7 @@ from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
 from .helpers import event_overlap
 from .models import Event, EventRegistration
+from django.core.mail import send_mail
 
 
 class EventsView(ListView):
@@ -175,7 +176,15 @@ class AddRegistrationView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
         try:
-            return super().form_valid(form)
+            host = event.user
+            response = super().form_valid(form)
+            send_mail(
+                f'Someone joined your event',
+                f'{self.request.user.username} joined your event {event.name}',
+                None,
+                [host.email]
+            )
+            return response
         except IntegrityError:
             form.add_error(None, 'You are already registered for this event.')
             return self.form_invalid(form)
@@ -209,3 +218,15 @@ class DeleteRegistrationView(LoginRequiredMixin, DeleteView):
         self.event_id = obj.event.id
 
         return obj
+
+    def form_valid(self, form):
+        host = self.get_object().user
+        event = self.get_object().event
+        response = super().form_valid(form)
+        send_mail(
+            f'Someone has unregistered from your event',
+            f'{self.request.user.username} has unregistered from {event.name}',
+            None,
+            [host.email]
+        )
+        return response
