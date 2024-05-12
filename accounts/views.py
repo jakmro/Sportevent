@@ -82,9 +82,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
             response = super().form_valid(form)
             send_verification_email(self.request, self.object)
             return response
-
-        response = super().form_valid(form)
-        return response
+        return super().form_valid(form)
 
 
 class DeleteProfileView(LoginRequiredMixin, DeleteView):

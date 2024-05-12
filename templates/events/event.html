@@ -3,21 +3,20 @@
 {% block title %}Event<{% endblock %}
 
 {% block content %}
-    <h2>{{ event.name }}</h2>
+    <h2>Name: {{ event.name }}</h2>
     <a href="{% url 'facility' event.facility_id %}">
-        <p>{{ event.facility }}</p>
+        <p>Facility: {{ event.facility }}</p>
     </a>
-    <p>{{ event.description }}</p>
-    <p>{{ event.sport_type }}</p>
-    <p>{{ event.start_datetime }}</p>
-    <p>{{ event.end_datetime }}</p>
+    <p>Description: {{ event.description }}</p>
+    <p>Sport type: {{ event.sport_type }}</p>
+    <p>Start datetime: {{ event.start_datetime }}</p>
+    <p>End datetime: {{ event.end_datetime }}</p>
+    <p>Meeting count: {{ event.meeting_count }}</p>
     {% if event.repeat_every_n_days %}
         <p>Repeat every {{ event.repeat_every_n_days }} days</p>
-    {% else %}
-        <p>Doesn't repeat</p>
     {% endif %}
-    <p>{{ event.min_people_no }}</p>
-    <p>{{ event.max_people_no }}</p>
+    <p>Min people no: {{ event.min_people_no }}</p>
+    <p>Max people no: {{ event.max_people_no }}</p>
     {% if user.is_authenticated %}
         {% if not registration %}
             <a href="{% url 'add_registration' event.pk %}">

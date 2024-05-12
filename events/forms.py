@@ -12,6 +12,7 @@ class EventForm(ModelForm):
             'sport_type',
             'start_datetime',
             'end_datetime',
+            'meeting_count',
             'repeat_every_n_days',
             'min_people_no',
             'max_people_no'
