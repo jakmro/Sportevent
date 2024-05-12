@@ -118,16 +118,20 @@ class AddRegistrationView(LoginRequiredMixin, CreateView):
         event = Event.objects.get(id=event_id)
         form.instance.event = event
 
-        user_registrations = EventRegistration.objects.filter(user=self.request.user)
-        for registration in user_registrations:
-            start = registration.event.start_datetime
-            end = registration.event.end_datetime
-            if event.start_datetime < end and event.end_datetime > start:
-                form.add_error(
-                    None,
-                    'You are registered for an event that is taking place at the same time.'
-                )
-                return self.form_invalid(form)
+        event_meetings = Meeting.objects.filter(event_id=event_id)
+        registrations = EventRegistration.objects.filter(user=self.request.user)
+        event_ids = registrations.values_list('event_id', flat=True)
+        meetings = Meeting.objects.filter(event_id__in=event_ids)
+
+        for meeting in meetings:
+            for event_meeting in event_meetings:
+                if (meeting.start_datetime < event_meeting.end_datetime
+                        and meeting.end_datetime > event_meeting.start_datetime):
+                    form.add_error(
+                        None,
+                        'You are registered for an event that is taking place at the same time.'
+                    )
+                    return self.form_invalid(form)
 
         registrations_for_event = EventRegistration.objects.filter(event=event)
         if len(registrations_for_event) >= event.max_people_no:

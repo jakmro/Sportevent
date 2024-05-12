@@ -1,12 +1,12 @@
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 	npm install
 
 migrate:
-	python manage.py makemigrations
-	python manage.py migrate
+	python3 manage.py makemigrations
+	python3 manage.py migrate
 
 run:
-	python manage.py runserver
+	python3 manage.py runserver
 
 all: install migrate
