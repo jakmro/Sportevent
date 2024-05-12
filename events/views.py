@@ -4,12 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
-from django.utils import timezone
+from django.core.mail import send_mail
 from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
-from .helpers import event_overlap
-from .models import Event, EventRegistration
-from django.core.mail import send_mail
+from .models import Event, EventRegistration, Meeting
+from .helpers import validate_event_form, add_meetings
 
 
 class EventsView(ListView):
@@ -55,31 +54,12 @@ class AddEventView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        start_datetime = form.cleaned_data['start_datetime']
-        end_datetime = form.cleaned_data['end_datetime']
-
-        if start_datetime < timezone.now():
-            form.add_error('start_datetime', 'Events cannot start in the past.')
-            return self.form_invalid(form)
-
-        if start_datetime > end_datetime:
-            form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
-            return self.form_invalid(form)
-
-        min_people_no = form.cleaned_data['min_people_no']
-        max_people_no = form.cleaned_data['max_people_no']
-        if min_people_no > max_people_no:
-            form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
-            return self.form_invalid(form)
-
-        if event_overlap(form, None):
-            form.add_error(
-                None,
-                'There is already an event at this time at this place.'
-            )
-            return self.form_invalid(form)
-
-        return super().form_valid(form)
+        response = validate_event_form(self, form)
+        if response:
+            return response
+        response = super().form_valid(form)
+        add_meetings(self, form)
+        return response
 
 
 class UpdateEventView(LoginRequiredMixin, UpdateView):
@@ -100,31 +80,13 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         return obj
 
     def form_valid(self, form):
-        start_datetime = form.cleaned_data['start_datetime']
-        end_datetime = form.cleaned_data['end_datetime']
-
-        if start_datetime < timezone.now():
-            form.add_error('start_datetime', 'Events cannot start in the past.')
-            return self.form_invalid(form)
-
-        if start_datetime > end_datetime:
-            form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
-            return self.form_invalid(form)
-
-        min_people_no = form.cleaned_data['min_people_no']
-        max_people_no = form.cleaned_data['max_people_no']
-        if min_people_no > max_people_no:
-            form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
-            return self.form_invalid(form)
-
-        if event_overlap(form, self.get_object()):
-            form.add_error(
-                None,
-                'There is already an event at this time at this place.'
-            )
-            return self.form_invalid(form)
-
-        return super().form_valid(form)
+        response = validate_event_form(self, form)
+        if response:
+            return response
+        response = super().form_valid(form)
+        Meeting.objects.filter(event_id=self.get_object().id).delete()
+        add_meetings(self, form)
+        return response
 
 
 class DeleteEventView(LoginRequiredMixin, DeleteView):

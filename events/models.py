@@ -12,6 +12,12 @@ class Event(models.Model):
     sport_type = models.CharField(max_length=128)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
+    meeting_count = models.IntegerField(
+        default=1,
+        validators=[
+            MinValueValidator(1)
+        ]
+    )
     repeat_every_n_days = models.IntegerField(
         null=True,
         blank=True,
@@ -32,6 +38,12 @@ class Event(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Meeting(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
 
 
 class EventRegistration(models.Model):

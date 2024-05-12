@@ -1,55 +1,74 @@
+from django.utils import timezone
 from datetime import timedelta
-from events.models import Event
+from .models import Event, Meeting
 
 
-def event_overlap(form, current_event):
+def validate_event_form(self, form):
+    start_datetime = form.cleaned_data['start_datetime']
+    end_datetime = form.cleaned_data['end_datetime']
+
+    if start_datetime < timezone.now():
+        form.add_error('start_datetime', 'Events cannot start in the past.')
+        return self.form_invalid(form)
+
+    if start_datetime > end_datetime:
+        form.add_error('start_datetime', 'Start datetime must be less than or equal to End datetime.')
+        return self.form_invalid(form)
+
+    min_people_no = form.cleaned_data['min_people_no']
+    max_people_no = form.cleaned_data['max_people_no']
+    if min_people_no > max_people_no:
+        form.add_error('min_people_no', 'Min people no must be less than or equal to Max people no.')
+        return self.form_invalid(form)
+
+    meeting_count = form.cleaned_data['meeting_count']
     repeat_every_n_days = form.cleaned_data['repeat_every_n_days']
+
+    if meeting_count == 1 and repeat_every_n_days:
+        form.add_error(
+            'meeting_count',
+            'Meeting count must be greater than 1 for an event to repeat.'
+        )
+        return self.form_invalid(form)
+
+    if meeting_count > 1 and not repeat_every_n_days:
+        form.add_error(
+            'repeat_every_n_days',
+            'Event must be repeating to satisfy the meeting count condition.'
+        )
+        return self.form_invalid(form)
+
     facility_events = Event.objects.filter(facility=form.cleaned_data['facility'])
+    facility_meetings = Meeting.objects.filter(event__in=facility_events)
 
-    for event in facility_events:
-        if event == current_event:
-            continue
+    start = start_datetime
+    end = end_datetime
 
-        start_datetime = form.cleaned_data['start_datetime']
-        end_datetime = form.cleaned_data['end_datetime']
+    for _ in range(meeting_count):
+        for meeting in facility_meetings:
+            if start < meeting.end_datetime and end > meeting.start_datetime:
+                form.add_error(
+                    None,
+                    'There is already an event at this time at this place.'
+                )
+                return self.form_invalid(form)
 
-        event_start_datetime = event.start_datetime
-        event_end_datetime = event.end_datetime
+        if repeat_every_n_days:
+            start += timedelta(days=repeat_every_n_days)
+            end += timedelta(days=repeat_every_n_days)
 
-        if repeat_every_n_days and start_datetime < event_end_datetime:
-            day_diff = (event_end_datetime - start_datetime).days
-            to_add = day_diff // repeat_every_n_days * repeat_every_n_days
-            start_datetime += timedelta(days=to_add)
-            end_datetime += timedelta(days=to_add)
 
-        if event.repeat_every_n_days and event_start_datetime < end_datetime:
-            day_diff = (end_datetime - event_start_datetime).days
-            to_add = day_diff // event.repeat_every_n_days * event.repeat_every_n_days
-            event_start_datetime += timedelta(days=to_add)
-            event_end_datetime += timedelta(days=to_add)
+def add_meetings(self, form):
+    start_datetime = form.cleaned_data['start_datetime']
+    end_datetime = form.cleaned_data['end_datetime']
+    meeting_count = form.cleaned_data['meeting_count']
+    repeat_every_n_days = form.cleaned_data['repeat_every_n_days']
 
-        if start_datetime < event_end_datetime and end_datetime > event_start_datetime:
-            return True
+    start = start_datetime
+    end = end_datetime
 
-        if repeat_every_n_days and event.repeat_every_n_days:
-            diff_tracker = set()
-
-            while True:
-                diff = start_datetime - event_start_datetime
-
-                if diff in diff_tracker:
-                    return False
-
-                diff_tracker.add(diff)
-
-                if start_datetime < event_start_datetime:
-                    start_datetime += timedelta(days=repeat_every_n_days)
-                    end_datetime += timedelta(days=repeat_every_n_days)
-                else:
-                    event_start_datetime += timedelta(days=event.repeat_every_n_days)
-                    event_end_datetime += timedelta(days=event.repeat_every_n_days)
-
-                if start_datetime < event_end_datetime and end_datetime > event_start_datetime:
-                    return True
-
-    return False
+    for _ in range(meeting_count):
+        Meeting.objects.create(event_id=self.object.id, start_datetime=start, end_datetime=end)
+        if repeat_every_n_days:
+            start += timedelta(days=repeat_every_n_days)
+            end += timedelta(days=repeat_every_n_days)
