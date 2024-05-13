@@ -1,12 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.db.models import Avg, Q
 from django.utils.translation import gettext
 from django.db import IntegrityError
+from ics import Calendar, Event as IcsEvent
 
-from events.models import Event
+from events.models import Event, Meeting
 from .utils import geocode
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
@@ -69,7 +70,31 @@ class FacilityView(DetailView):
         except Rating.DoesNotExist:
             context['user_rating'] = None
 
+        subscription_link = self.request.build_absolute_uri(reverse('facility_calendar', kwargs={'pk': self.get_object().id}))
+        context['subscription_link'] = subscription_link
+
         return context
+
+def facility_calendar(request, pk):
+    facility = Facility.objects.get(pk=pk)
+    events = Event.objects.filter(facility=facility)
+    calendar = Calendar()
+    for event in events:
+        meetings = Meeting.objects.filter(event=event)
+        for meeting in meetings:
+            ics_event = IcsEvent()
+            ics_event.name = event.name
+            ics_event.begin = meeting.start_datetime
+            ics_event.end = meeting.end_datetime
+            ics_event.description = event.description
+            ics_event.location = event.facility.name
+            ics_event.categories = event.sport_type
+            calendar.events.add(ics_event)
+
+    response = HttpResponse(str(calendar), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="facility_calendar.ics"'
+
+    return response
 
 
 class AddRatingView(LoginRequiredMixin, CreateView):

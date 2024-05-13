@@ -28,6 +28,11 @@
             </a>
         {% endif %}
     {% endif %}
+    {% if subscription_link %}
+        <a href="{{ subscription_link }}">Event calendar subscription link</a>
+        <br>
+        {{ subscription_link }}
+    {% endif %}
     {% if user.is_authenticated and user.pk == event.user.pk %}
         <a href="{% url 'update_event' event.pk %}">
             <p>Update Event</p>

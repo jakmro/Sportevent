@@ -2,15 +2,17 @@ from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import CustomUser
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext
 from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
+from ics import Calendar, Event as IcsEvent
 from .utils import email_verification_token
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
+from events.models import Meeting, EventRegistration
 
 
 class SignUpView(CreateView):
@@ -57,6 +59,36 @@ class ProfileView(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'users/user_profile.html'
     context_object_name = 'user_profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.get_object().id
+        subscription_link = self.request.build_absolute_uri(reverse('user_calendar', kwargs={'pk': pk}))
+        context['subscription_link'] = subscription_link
+        return context
+
+
+def user_calendar(request, pk):
+    user = CustomUser.objects.get(pk=pk)
+    registrations = EventRegistration.objects.filter(user=user)
+    calendar = Calendar()
+    for registration in registrations:
+        event = registration.event
+        meetings = Meeting.objects.filter(event=event)
+        for meeting in meetings:
+            ics_event = IcsEvent()
+            ics_event.name = event.name
+            ics_event.begin = meeting.start_datetime
+            ics_event.end = meeting.end_datetime
+            ics_event.description = event.description
+            ics_event.location = event.facility.name
+            ics_event.categories = event.sport_type
+            calendar.events.add(ics_event)
+
+    response = HttpResponse(str(calendar), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="user_calendar.ics"'
+
+    return response
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
