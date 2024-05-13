@@ -44,6 +44,7 @@ class Meeting(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
+    notification_sent = models.BooleanField(default=False)
 
 
 class EventRegistration(models.Model):

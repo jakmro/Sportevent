@@ -7,11 +7,10 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
-
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration, Meeting
 from .helpers import validate_event_form, add_meetings
-
+from accounts.mixins import EmailVerificationRequiredMixin
 
 
 class EventsView(ListView):
@@ -129,7 +128,7 @@ class DeleteEventView(LoginRequiredMixin, DeleteView):
         return obj
 
 
-class AddRegistrationView(LoginRequiredMixin, CreateView):
+class AddRegistrationView(LoginRequiredMixin, EmailVerificationRequiredMixin, CreateView):
     model = EventRegistration
     form_class = EventRegistrationForm
     template_name = 'events/add_registration.html'
@@ -189,7 +188,7 @@ class AddRegistrationView(LoginRequiredMixin, CreateView):
         return context
 
 
-class DeleteRegistrationView(LoginRequiredMixin, DeleteView):
+class DeleteRegistrationView(LoginRequiredMixin, EmailVerificationRequiredMixin, DeleteView):
     model = EventRegistration
     template_name = 'events/delete_registration.html'
 
