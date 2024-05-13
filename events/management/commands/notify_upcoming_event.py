@@ -2,7 +2,7 @@ from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
-from events.models import Event, Meeting, EventRegistration
+from events.models import Meeting, EventRegistration
 
 
 class Command(BaseCommand):
@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         upcoming_meetings = Meeting.objects.filter(start_datetime__lt=threshold, notification_sent=False)
         events = upcoming_meetings.values_list('event', flat=True)
-        registrations = EventRegistration.objects.filter(event__in=events)
+        registrations = EventRegistration.objects.filter(event__in=events, user__email_verified=True)
 
         for registration in registrations:
             user = registration.user
