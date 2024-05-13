@@ -5,12 +5,14 @@ from django.http import Http404
 from django.utils.translation import gettext
 from django.db.models import Q
 from django.core.mail import send_mail
+from django.http import HttpResponse
+from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
+
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration, Meeting
 from .helpers import validate_event_form, add_meetings
-from ics import Calendar, Event as IcsEvent
-from django.http import HttpResponse
+
 
 
 class EventsView(ListView):
