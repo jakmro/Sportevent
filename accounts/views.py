@@ -9,11 +9,11 @@ from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
 from ics import Calendar, Event as IcsEvent
-
 from .utils import email_verification_token
-from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
-from accounts.models import CustomUser
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
 from events.models import Meeting, EventRegistration
+
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -66,6 +66,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
         subscription_link = self.request.build_absolute_uri(reverse('user_calendar', kwargs={'pk': pk}))
         context['subscription_link'] = subscription_link
         return context
+
 
 def user_calendar(request, pk):
     user = CustomUser.objects.get(pk=pk)
