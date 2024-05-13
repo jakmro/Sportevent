@@ -1,14 +1,17 @@
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext
 from django.db.models import Q
 from django.core.mail import send_mail
+from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
+
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration, Meeting
 from .helpers import validate_event_form, add_meetings
+
 
 
 class EventsView(ListView):
@@ -43,7 +46,30 @@ class EventView(DetailView):
         except EventRegistration.DoesNotExist:
             context['registration'] = None
 
+        subscription_link = self.request.build_absolute_uri(reverse('event_calendar', kwargs={'event_id': event_id}))
+        context['subscription_link'] = subscription_link
+
         return context
+
+
+def event_calendar(request, event_id):
+    event = Event.objects.get(id=event_id)
+    meetings = Meeting.objects.filter(event=event)
+    calendar = Calendar()
+    for meeting in meetings:
+        ics_event = IcsEvent()
+        ics_event.name = event.name
+        ics_event.begin = meeting.start_datetime
+        ics_event.end = meeting.end_datetime
+        ics_event.description = event.description
+        ics_event.location = event.facility.name
+        ics_event.categories = event.sport_type
+        calendar.events.add(ics_event)
+
+    response = HttpResponse(str(calendar), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="event_calendar.ics"'
+
+    return response
 
 
 class AddEventView(LoginRequiredMixin, CreateView):

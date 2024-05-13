@@ -17,6 +17,11 @@
         <p>Outdoor</p>
     {% endif %}
     <p>{{ facility.contact_information }}</p>
+    {% if subscription_link %}
+        <a href="{{ subscription_link }}">Facility events calendar subscription link</a>
+        <br>
+        {{ subscription_link }}
+    {% endif %}
     {% if user.is_authenticated and user.pk == facility.user.pk %}
         <a href="{% url 'update_facility' facility.pk %}">
             <p>Update Facility</p>
