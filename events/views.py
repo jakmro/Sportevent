@@ -80,11 +80,11 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         return obj
 
     def form_valid(self, form):
+        Meeting.objects.filter(event_id=self.get_object().id).delete()
         response = validate_event_form(self, form)
         if response:
             return response
         response = super().form_valid(form)
-        Meeting.objects.filter(event_id=self.get_object().id).delete()
         add_meetings(self, form)
         return response
 
