@@ -6,12 +6,14 @@ from .views import (
     UpdateEventView,
     DeleteEventView,
     AddRegistrationView,
-    DeleteRegistrationView
+    DeleteRegistrationView,
+    add_to_calendar
 )
 
 urlpatterns = [
     path('', EventsView.as_view(), name='events'),
     path('<int:pk>', EventView.as_view(), name='event'),
+    path('<int:event_id>/calendar/', add_to_calendar, name='add_to_calendar'),
     path('add/', AddEventView.as_view(), name='add_event'),
     path('<int:pk>/update/', UpdateEventView.as_view(), name='update_event'),
     path('<int:pk>/delete/', DeleteEventView.as_view(), name='delete_event'),
