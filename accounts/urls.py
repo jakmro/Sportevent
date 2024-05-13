@@ -6,12 +6,14 @@ from .views import (
     ProfileView,
     UpdateProfileView,
     DeleteProfileView,
-    activate
+    activate,
+    add_to_calendar
 )
 
 urlpatterns = [
     path('signup/', SignUpView.as_view(), name='signup'),
     path('profile/<int:pk>/', ProfileView.as_view(), name='user_profile'),
+    path('profile/<int:pk>/calendar/', add_to_calendar, name='add_to_calendar'),
     path('profile/<int:pk>/update', UpdateProfileView.as_view(), name='update_profile'),
     path('profile/<int:pk>/delete', DeleteProfileView.as_view(), name='delete_profile'),
     path('activate/<uidb64>/<token>/', activate, name='activate'),

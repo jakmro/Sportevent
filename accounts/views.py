@@ -11,7 +11,9 @@ from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
 from .utils import email_verification_token
-
+from ics import Calendar, Event as IcsEvent
+from django.http import HttpResponse
+from events.models import Event, Meeting
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -57,6 +59,34 @@ class ProfileView(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'users/user_profile.html'
     context_object_name = 'user_profile'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.get_object().id
+        subscription_link = self.request.build_absolute_uri(reverse('add_to_calendar', kwargs={'pk': pk}))
+        context['subscription_link'] = subscription_link
+        return context
+
+def add_to_calendar(request, pk):
+    user = CustomUser.objects.get(pk=pk)
+    events = Event.objects.filter(user=user)
+    calendar = Calendar()
+    for event in events:
+        meetings = Meeting.objects.filter(event=event)
+        for meeting in meetings:
+            ics_event = IcsEvent()
+            ics_event.name = event.name
+            ics_event.begin = meeting.start_datetime
+            ics_event.end = meeting.end_datetime
+            ics_event.description = event.description
+            ics_event.location = event.facility.name
+            ics_event.categories = event.sport_type
+            calendar.events.add(ics_event)
+
+    response = HttpResponse(str(calendar), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="user_calendar.ics"'
+
+    return response
 
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):

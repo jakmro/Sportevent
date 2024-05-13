@@ -17,6 +17,9 @@
     {% else %}
         <p>No avatar uploaded</p>
     {% endif %}
+    {% if subscription_link %}
+        <a href="{{ subscription_link }}">Your events calendar subscription link</a>
+    {% endif %}
     {% if user.is_authenticated and user_profile.pk == request.user.pk %}
         <a href="{% url 'update_profile' user_profile.pk %}">
             <p>Update Profile</p>
