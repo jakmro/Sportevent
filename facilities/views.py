@@ -1,11 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.db.models import Avg, Q
 from django.utils.translation import gettext
 from django.db import IntegrityError
-from django.http import HttpResponse
 from ics import Calendar, Event as IcsEvent
 
 from events.models import Event, Meeting
@@ -71,12 +70,12 @@ class FacilityView(DetailView):
         except Rating.DoesNotExist:
             context['user_rating'] = None
 
-        subscription_link = self.request.build_absolute_uri(reverse('add_to_calendar', kwargs={'pk': self.get_object().id}))
+        subscription_link = self.request.build_absolute_uri(reverse('facility_calendar', kwargs={'pk': self.get_object().id}))
         context['subscription_link'] = subscription_link
 
         return context
 
-def add_to_calendar(request, pk):
+def facility_calendar(request, pk):
     facility = Facility.objects.get(pk=pk)
     events = Event.objects.filter(facility=facility)
     calendar = Calendar()

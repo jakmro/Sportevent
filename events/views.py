@@ -1,11 +1,10 @@
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
 
@@ -47,13 +46,13 @@ class EventView(DetailView):
         except EventRegistration.DoesNotExist:
             context['registration'] = None
 
-        subscription_link = self.request.build_absolute_uri(reverse('add_to_calendar', kwargs={'event_id': event_id}))
+        subscription_link = self.request.build_absolute_uri(reverse('event_calendar', kwargs={'event_id': event_id}))
         context['subscription_link'] = subscription_link
 
         return context
 
 
-def add_to_calendar(request, event_id):
+def event_calendar(request, event_id):
     event = Event.objects.get(id=event_id)
     meetings = Meeting.objects.filter(event=event)
     calendar = Calendar()

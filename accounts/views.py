@@ -2,18 +2,18 @@ from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import CustomUser
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext
 from django.core.mail import send_mail
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import redirect
-from .utils import email_verification_token
 from ics import Calendar, Event as IcsEvent
-from django.http import HttpResponse
-from events.models import Event, Meeting
+
+from .utils import email_verification_token
+from accounts.forms import CustomUserCreationForm, CustomUserChangeForm
+from accounts.models import CustomUser
+from events.models import Meeting, EventRegistration
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -63,15 +63,16 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.get_object().id
-        subscription_link = self.request.build_absolute_uri(reverse('add_to_calendar', kwargs={'pk': pk}))
+        subscription_link = self.request.build_absolute_uri(reverse('user_calendar', kwargs={'pk': pk}))
         context['subscription_link'] = subscription_link
         return context
 
-def add_to_calendar(request, pk):
+def user_calendar(request, pk):
     user = CustomUser.objects.get(pk=pk)
-    events = Event.objects.filter(user=user)
+    registrations = EventRegistration.objects.filter(user=user)
     calendar = Calendar()
-    for event in events:
+    for registration in registrations:
+        event = registration.event
         meetings = Meeting.objects.filter(event=event)
         for meeting in meetings:
             ics_event = IcsEvent()
