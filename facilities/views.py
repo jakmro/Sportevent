@@ -6,11 +6,32 @@ from django.db.models import Avg, Q
 from django.utils.translation import gettext
 from django.db import IntegrityError
 from ics import Calendar, Event as IcsEvent
-
 from events.models import Event, Meeting
 from .utils import geocode
 from .forms import FacilityForm, RatingForm
 from .models import Facility, Rating
+from accounts.mixins import EmailVerificationRequiredMixin
+
+
+class FacilityView(DetailView):
+    model = Facility
+    template_name = 'facilities/facility.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ratings'] = Rating.objects.filter(facility=self.get_object().id)
+        context['events'] = Event.objects.filter(facility=self.get_object().id)
+
+        try:
+            context['user_rating'] = Rating.objects.get(user=self.get_object().user.id)
+        except Rating.DoesNotExist:
+            context['user_rating'] = None
+
+        subscription_link = self.request.build_absolute_uri(
+            reverse('facility_calendar', kwargs={'pk': self.get_object().id}))
+        context['subscription_link'] = subscription_link
+
+        return context
 
 
 class FacilitiesView(ListView):
@@ -31,7 +52,7 @@ class FacilitiesView(ListView):
         return object_list
 
 
-class AddFacilityView(LoginRequiredMixin, CreateView):
+class AddFacilityView(LoginRequiredMixin, EmailVerificationRequiredMixin, CreateView):
     model = Facility
     form_class = FacilityForm
     template_name = 'facilities/add_facility.html'
@@ -56,83 +77,7 @@ class AddFacilityView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
 
-class FacilityView(DetailView):
-    model = Facility
-    template_name = 'facilities/facility.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['ratings'] = Rating.objects.filter(facility=self.get_object().id)
-        context['events'] = Event.objects.filter(facility=self.get_object().id)
-
-        try:
-            context['user_rating'] = Rating.objects.get(user=self.get_object().user.id)
-        except Rating.DoesNotExist:
-            context['user_rating'] = None
-
-        subscription_link = self.request.build_absolute_uri(reverse('facility_calendar', kwargs={'pk': self.get_object().id}))
-        context['subscription_link'] = subscription_link
-
-        return context
-
-def facility_calendar(request, pk):
-    facility = Facility.objects.get(pk=pk)
-    events = Event.objects.filter(facility=facility)
-    calendar = Calendar()
-    for event in events:
-        meetings = Meeting.objects.filter(event=event)
-        for meeting in meetings:
-            ics_event = IcsEvent()
-            ics_event.name = event.name
-            ics_event.begin = meeting.start_datetime
-            ics_event.end = meeting.end_datetime
-            ics_event.description = event.description
-            ics_event.location = event.facility.name
-            ics_event.categories = event.sport_type
-            calendar.events.add(ics_event)
-
-    response = HttpResponse(str(calendar), content_type='text/calendar')
-    response['Content-Disposition'] = 'attachment; filename="facility_calendar.ics"'
-
-    return response
-
-
-class AddRatingView(LoginRequiredMixin, CreateView):
-    model = Rating
-    form_class = RatingForm
-    template_name = 'facilities/add_rating.html'
-
-    def get_success_url(self):
-        facility_id = self.kwargs.get('facility_id')
-        return reverse_lazy('facility', kwargs={'pk': facility_id})
-
-    def form_valid(self, form):
-        facility_id = self.kwargs.get('facility_id')
-        form.instance.facility = Facility.objects.get(id=facility_id)
-        form.instance.user = self.request.user
-
-        try:
-            return super().form_valid(form)
-        except IntegrityError:
-            form.add_error(None, 'You can rate the same facility only once.')
-            return self.form_invalid(form)
-
-
-class DeleteFacilityView(LoginRequiredMixin, DeleteView):
-    model = Facility
-    success_url = '/facilities'
-    template_name = 'facilities/delete_facility.html'
-
-    def get_object(self, queryset=None):
-        obj = super().get_object(queryset)
-        if obj.user != self.request.user:
-            raise Http404(
-                gettext("You don't own this object")
-            )
-        return obj
-
-
-class UpdateFacilityView(LoginRequiredMixin, UpdateView):
+class UpdateFacilityView(LoginRequiredMixin, EmailVerificationRequiredMixin, UpdateView):
     model = Facility
     fields = [
         'name',
@@ -175,6 +120,42 @@ class UpdateFacilityView(LoginRequiredMixin, UpdateView):
             return self.form_invalid(form)
 
 
+class DeleteFacilityView(LoginRequiredMixin, EmailVerificationRequiredMixin, DeleteView):
+    model = Facility
+    success_url = '/facilities'
+    template_name = 'facilities/delete_facility.html'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404(
+                gettext("You don't own this object")
+            )
+        return obj
+
+
+def facility_calendar(request, pk):
+    facility = Facility.objects.get(pk=pk)
+    events = Event.objects.filter(facility=facility)
+    calendar = Calendar()
+    for event in events:
+        meetings = Meeting.objects.filter(event=event)
+        for meeting in meetings:
+            ics_event = IcsEvent()
+            ics_event.name = event.name
+            ics_event.begin = meeting.start_datetime
+            ics_event.end = meeting.end_datetime
+            ics_event.description = event.description
+            ics_event.location = event.facility.name
+            ics_event.categories = event.sport_type
+            calendar.events.add(ics_event)
+
+    response = HttpResponse(str(calendar), content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="facility_calendar.ics"'
+
+    return response
+
+
 def get_facilities_data(request):
     facilities = list(Facility.objects.values())
     for i, facility in enumerate(facilities):
@@ -187,7 +168,28 @@ def get_facilities_data(request):
     return JsonResponse(facilities, safe=False)
 
 
-class UpdateRatingView(LoginRequiredMixin, UpdateView):
+class AddRatingView(LoginRequiredMixin, EmailVerificationRequiredMixin, CreateView):
+    model = Rating
+    form_class = RatingForm
+    template_name = 'facilities/add_rating.html'
+
+    def get_success_url(self):
+        facility_id = self.kwargs.get('facility_id')
+        return reverse_lazy('facility', kwargs={'pk': facility_id})
+
+    def form_valid(self, form):
+        facility_id = self.kwargs.get('facility_id')
+        form.instance.facility = Facility.objects.get(id=facility_id)
+        form.instance.user = self.request.user
+
+        try:
+            return super().form_valid(form)
+        except IntegrityError:
+            form.add_error(None, 'You can rate the same facility only once.')
+            return self.form_invalid(form)
+
+
+class UpdateRatingView(LoginRequiredMixin, EmailVerificationRequiredMixin, UpdateView):
     model = Rating
     fields = [
         'rating',
@@ -208,7 +210,7 @@ class UpdateRatingView(LoginRequiredMixin, UpdateView):
         return obj
 
 
-class DeleteRatingView(LoginRequiredMixin, DeleteView):
+class DeleteRatingView(LoginRequiredMixin, EmailVerificationRequiredMixin, DeleteView):
     model = Rating
     template_name = 'facilities/delete_rating.html'
 

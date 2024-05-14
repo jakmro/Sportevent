@@ -71,7 +71,7 @@ def event_calendar(request, event_id):
     return response
 
 
-class AddEventView(LoginRequiredMixin, CreateView):
+class AddEventView(LoginRequiredMixin, EmailVerificationRequiredMixin, CreateView):
     model = Event
     form_class = EventForm
     template_name = 'events/add_event.html'
@@ -87,7 +87,7 @@ class AddEventView(LoginRequiredMixin, CreateView):
         return response
 
 
-class UpdateEventView(LoginRequiredMixin, UpdateView):
+class UpdateEventView(LoginRequiredMixin, EmailVerificationRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
     template_name = 'events/update_event.html'
@@ -114,7 +114,7 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
         return response
 
 
-class DeleteEventView(LoginRequiredMixin, DeleteView):
+class DeleteEventView(LoginRequiredMixin, EmailVerificationRequiredMixin, DeleteView):
     model = Event
     success_url = '/events'
     template_name = 'events/delete_event.html'
