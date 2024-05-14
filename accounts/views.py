@@ -63,12 +63,14 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pk = self.get_object().id
-        subscription_link = self.request.build_absolute_uri(reverse('user_calendar', kwargs={'pk': pk}))
-        context['subscription_link'] = subscription_link
+        uidb64 = urlsafe_base64_encode(force_bytes(pk))
+        subscription_link = self.request.build_absolute_uri(reverse('user_calendar', kwargs={'uidb64': uidb64}))
+        context['subscription_link'] = subscription_link if self.request.user.pk == pk else None
         return context
 
 
-def user_calendar(request, pk):
+def user_calendar(request, uidb64):
+    pk = urlsafe_base64_decode(uidb64).decode()
     user = CustomUser.objects.get(pk=pk)
     registrations = EventRegistration.objects.filter(user=user)
     calendar = Calendar()
