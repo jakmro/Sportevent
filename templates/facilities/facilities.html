@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Facilities<{% endblock %}
+{% block title %}Facilities{% endblock %}
 
 {% block content %}
 
     <div class="space-y-12">
         <div class=" pb-12">
             <div class="mt-10 ml-5 grid grid-cols-6 gap-x-6 gap-y-3 sm:grid-cols-6">
-                <div class="sm:col-start-1 col-span-3 rounded-xl">
+                <div class="sm:col-start-2 col-span-4 rounded-xl">
 
                     <form action="{% url 'facilities' %}" method="get" class="flex items-center space-x-4">
                         <label class="flex-1">
@@ -20,7 +20,7 @@
                 </div>
                 {% for facility in facilities_list %}
 
-                    <div class="sm:col-start-1 col-span-3 h-40 rounded-xl">
+                    <div class="sm:col-start-2 col-span-4 h-40 rounded-xl">
                         <a href="{% url 'facility' facility.pk %}" class="flex items-center space-x-4 rounded-xl border-gray-300 border-2">
                             <div class="w-40 h-40 rounded-xl">
                                 {% if facility.image %}
@@ -31,8 +31,16 @@
                             <div>
                                 <h2 class="text-xl">{{ facility.name }}</h2>
                                 <h5 class="text-sm">{{ facility.location }}</h5>
-                                <h4>{{ facility.description }}</h4>
-                                <h4>{{ facility.sport_type }}</h4>
+                                <h5>{{ facility.description }}</h5>
+                                <h4>
+                                    {{ facility.sport_type }}
+                                    {% if facility.avg_rating %}
+                                        <span class="separator border-l border-gray-400 mx-2 h-3 font-bold"></span>
+                                        <span class="rating-star">&#9733;</span>
+                                        {{ facility.avg_rating }}
+                                        ({{ facility.total_comments }})
+                                    {% endif %}
+                                </h4>
                             </div>
                         </a>
                     </div>

@@ -2,7 +2,8 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, Http404, HttpResponse
-from django.db.models import Avg, Q
+from django.db.models import Avg, Q, FloatField, Count
+from django.db.models.functions import Round
 from django.utils.translation import gettext
 from django.db import IntegrityError
 from ics import Calendar, Event as IcsEvent
@@ -23,7 +24,7 @@ class FacilityView(DetailView):
         context['events'] = Event.objects.filter(facility=self.get_object().id)
 
         try:
-            context['user_rating'] = Rating.objects.get(user=self.get_object().user.id)
+            context['user_rating'] = Rating.objects.filter(user=self.get_object().user.id).first()
         except Rating.DoesNotExist:
             context['user_rating'] = None
 
@@ -49,6 +50,8 @@ class FacilitiesView(ListView):
                 Q(location__contains=query) |
                 Q(sport_type__contains=query)
             )
+        object_list = object_list.annotate(avg_rating=Round(Avg('rating__rating'), 1, output_field=FloatField()))
+        object_list = object_list.annotate(total_comments=Count('rating__comment'))
         return object_list
 
 
