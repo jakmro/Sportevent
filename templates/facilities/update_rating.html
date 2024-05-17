@@ -14,6 +14,9 @@
                         <label for="rating" class="block text-sm font-medium leading-6 text-gray-900">Rating</label>
                         <div class="mt-2">
                           <input type="number" name="rating" value="{{ form.instance.rating }}" id="rating" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.rating.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -21,6 +24,9 @@
                         <label for="comment" class="block text-sm font-medium leading-6 text-gray-900">Comment</label>
                         <div class="mt-2">
                           <textarea id="comment" name="comment" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ form.instance.comment }}</textarea>
+                            {% for error in form.comment.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
                         </div>
                     </div>
 

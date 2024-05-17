@@ -3,13 +3,66 @@
 {% block title %}Update Profile{% endblock %}
 
 {% block content %}
-    <h1>Update Profile</h1>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
-        <a href="{% url 'user_profile' object.pk %}">
-            <p>Cancel</p>
-        </a>
+        <div class="space-y-12">
+            <div class=" pb-12">
+                <h1 class="text-center text-4xl font-semibold leading-7 text-gray-900 mt-5">Update Profile</h1>
+
+                <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
+                        <div class="mt-2">
+                          <input type="text" name="username" id="username" value="{{ form.instance.username }}" autocomplete="username" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.username.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+                        <div class="mt-2">
+                          <input type="email" name="email" id="email" value="{{ form.instance.email }}" autocomplete="email" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.email.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="date_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Date of birth</label>
+                        {{ form.date_of_birth }}
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="avatar" class="block text-sm font-medium leading-6 text-gray-900">Avatar</label>
+                        {{ form.avatar }}
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description</label>
+                        <div class="mt-2">
+                          <textarea id="description" name="description" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ form.instance.description }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="sports" class="block text-sm font-medium leading-6 text-gray-900">Sports</label>
+                        <div class="mt-2">
+                          <input type="text" name="sports" id="sports" value="{{ form.instance.sports }}" autocomplete="sports" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update Profile</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </form>
+
 {% endblock %}
