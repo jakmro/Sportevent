@@ -3,13 +3,39 @@
 {% block title %}Update Rating{% endblock %}
 
 {% block content %}
-    <h1>Update Rating</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
+        <div class="space-y-12">
+            <div class=" pb-12">
+                <h1 class="text-center text-4xl font-semibold leading-7 text-gray-900 mt-5">Update Rating</h1>
+                <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="rating" class="block text-sm font-medium leading-6 text-gray-900">Rating</label>
+                        <div class="mt-2">
+                          <input type="number" name="rating" value="{{ form.instance.rating }}" id="rating" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.rating.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="comment" class="block text-sm font-medium leading-6 text-gray-900">Comment</label>
+                        <div class="mt-2">
+                          <textarea id="comment" name="comment" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">{{ form.instance.comment }}</textarea>
+                            {% for error in form.comment.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </form>
-    <a href="{% url 'facility' object.facility_id %}">
-        <p>Cancel</p>
-    </a>
 {% endblock %}

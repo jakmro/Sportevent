@@ -1,62 +1,115 @@
 {% extends "base.html" %}
 
-{% block title %}Facility<{% endblock %}
+{% block title %}Facility{% endblock %}
 
 {% block content %}
-    <h2>{{ facility.name }}</h2>
-    <p>{{ facility.description }}</p>
-    {% if facility.image %}
-        <img src="{{ facility.image.url }}" alt="{{ facility.name }}">
-    {% endif %}
-    <p>{{ facility.location }}</p>
-    <p>{{ facility.sport_type }}</p>
-    <p>{{ facility.capacity }}</p>
-    {% if facility.is_indoor %}
-        <p>Indoor</p>
-    {% else %}
-        <p>Outdoor</p>
-    {% endif %}
-    <p>{{ facility.contact_information }}</p>
-    {% if subscription_link %}
-        <a href="{{ subscription_link }}">Facility events calendar subscription link</a>
-        <br>
-        {{ subscription_link }}
-    {% endif %}
-    {% if user.is_authenticated and user.pk == facility.user.pk %}
-        <a href="{% url 'update_facility' facility.pk %}">
-            <p>Update Facility</p>
-        </a>
-    {% endif %}
-    {% if user.is_authenticated and user.pk == facility.user.pk %}
-        <a href="{% url 'delete_facility' facility.pk %}">
-            <p>Delete Facility</p>
-        </a>
-    {% endif %}
-    {% if not user_rating %}
-        <a href="{% url 'add_rating' facility.pk %}">
-            <p>Add Rating</p>
-        </a>
-    {% endif %}
-    {% for event in events %}
-        <a href="{% url 'event' event.pk %}">
-            <h2>{{ event.name }}</h2>
-        </a>
-        <p>{{ event.start_datetime }}</p>
-        <p>{{ event.end_datetime }}</p>
-        <p>{{ event.sport_type }}</p>
-    {% endfor %}
-    {% for rating in ratings %}
-        <p>{{ rating.user }}</p>
-        <p>{{ rating.rating }}</p>
-        <p>{{ rating.comment }}</p>
-        <p>{{ rating.date }}</p>
-        {% if rating == user_rating %}
-            <a href="{% url 'update_rating' rating.pk %}">
-                <p>Update Rating</p>
-            </a>
-            <a href="{% url 'delete_rating' rating.pk %}">
-                <p>Delete Rating</p>
-            </a>
-        {% endif %}
-    {% endfor %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-semibold">{{ facility.name }}</h2>
+                    <p class="text-gray-500">{{ facility.location }}</p>
+                </div>
+                {% if user.is_authenticated and user.pk == facility.user.pk %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'update_facility' facility.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+                            Update Facility
+                        </a>
+                        <a href="{% url 'delete_facility' facility.pk %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
+                            Delete Facility
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            <p class="text-gray-700">{{ facility.description }}</p>
+            <br>
+            <div class="flex justify-center items-center">
+                {% if facility.image %}
+                    <img src="{{ facility.image.url }}" alt="{{ facility.name }}" class="w-full max-w-lg h-auto">
+                {% endif %}
+            </div>
+        </div>
+        <div class="events-section mt-8">
+            <h3 class="text-lg font-semibold mb-2">Events</h3>
+            <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {% for event in events %}
+                    <div class="border rounded-lg overflow-hidden shadow-md">
+                        <div class="p-4">
+                            <h4 class="font-semibold text-lg mb-2">{{ event.name }}</h4>
+                            <p class="text-xs text-gray-600 mb-2">{{ event.start_datetime|date:"F d, Y H:i" }} - {{ event.end_datetime|date:"H:i" }}</p>
+                            <p class="text-sm text-gray-600 mb-2">{{ event.sport_type }}</p>
+                            <a href="{% url 'event' event.pk %}" class="block text-indigo-600 font-semibold hover:text-indigo-800">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <br>
+            <div class="sm:col-start-3 col-span-2">
+                <label class="block text-sm font-medium leading-6 text-gray-900">Calendar:</label>
+                {% if subscription_link %}
+                    <div class="mt-2 flex">
+                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
+                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                            <span id="copyTooltip">Copy to clipboard</span>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-8">
+        <h3 class="text-lg font-semibold">Ratings</h3>
+        <div class="mt-4 space-y-4">
+            {% for rating in ratings %}
+                <div class="bg-white shadow overflow-hidden rounded-lg mb-8">
+                    <div class="px-4 py-5 sm:px-6">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-medium text-gray-900">{{ rating.user }}</h3>
+                            <div class="flex items-center">
+                                <p class="text-sm text-gray-500 flex items-center mr-4">
+                                    <span class="rating-star">&#9733;</span>
+                                    {{ rating.rating }}
+                                </p>
+                                {% if rating == user_rating %}
+                                    <a href="{% url 'update_rating' rating.pk %}" class="text-indigo-600 font-semibold hover:text-indigo-800 mr-4">Update Rating</a>
+                                    <a href="{% url 'delete_rating' rating.pk %}" class="text-red-600 font-semibold hover:text-red-800">Delete Rating</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">{{ rating.date }}</p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <dl class="sm:divide-y sm:divide-gray-200">
+                            <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">Comment</dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:col-span-2">{{ rating.comment }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if not ratings %}
+                <p>No ratings yet.</p>
+            {% endif %}
+        </div>
+        <div class="mt-8">
+            {% if not user_rating %}
+                <a href="{% url 'add_rating' facility.pk %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-md">
+                    Add Rating
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("calendarLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+
+            var tooltip = document.getElementById("copyTooltip");
+            tooltip.innerHTML = "Copied!";
+        }
+    </script>
+
 {% endblock %}

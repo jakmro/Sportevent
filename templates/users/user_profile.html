@@ -3,38 +3,97 @@
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-    <h1>User Profile</h1>
-    <p>Username: {{ user_profile.username }}</p>
-    {% if not user_profile.email_verified %}
-        <p>Verify your email address by clicking the link sent to you</p>
-    {% endif %}
-    <p>Email: {{ user_profile.email }}</p>
-    <p>Date of Birth: {{ user_profile.date_of_birth }}</p>
-    <p>Description: {{ user_profile.description }}</p>
-    <p>Sports: {{ user_profile.sports }}</p>
-    {% if user_profile.avatar %}
-        <img src="{{ user_profile.avatar.url }}" alt="Avatar">
-    {% else %}
-        <p>No avatar uploaded</p>
-    {% endif %}
-    {% if subscription_link %}
-        <a href="{{ subscription_link }}">Your events calendar subscription link</a>
-        <br>
-        {{ subscription_link }}
-    {% endif %}
-    {% if user.is_authenticated and user_profile.pk == request.user.pk %}
-        <a href="{% url 'update_profile' user_profile.pk %}">
-            <p>Update Profile</p>
-        </a>
-        <a href="{% url 'delete_profile' user_profile.pk %}">
-            <p>Delete Profile</p>
-        </a>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit"
-                    class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
-                Log out
-            </button>
-        </form>
-    {% endif %}
+
+    <div class="space-y-12">
+        <div class=" pb-12">
+            <h1 class="text-center text-4xl font-semibold leading-7 text-gray-900 mt-5">User Profile</h1>
+
+            <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username:</label>
+                    <p>{{ user_profile.username }}</p>
+                </div>
+
+                {% if not user_profile.email_verified %}
+                    <p>Verify your email address by clicking the link sent to you</p>
+                {% endif %}
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email:</label>
+                    <p>{{ user_profile.email }}</p>
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="date_of_birth" class="block text-sm font-medium leading-6 text-gray-900">Date of birth:</label>
+                    <p>{{ user_profile.date_of_birth }}</p>
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="avatar" class="block text-sm font-medium leading-6 text-gray-900">Avatar:</label>
+                    {% if user_profile.avatar %}
+                        <img src="{{ user_profile.avatar.url }}" alt="Avatar">
+                    {% else %}
+                        <p>No avatar uploaded</p>
+                    {% endif %}
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description:</label>
+                    <p>{{ user_profile.description }}</p>
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label for="sports" class="block text-sm font-medium leading-6 text-gray-900">Sports:</label>
+                    <p>{{ user_profile.sports }}</p>
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Calendar:</label>
+                    {% if subscription_link %}
+                        <div class="mt-2 flex">
+                            <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
+                            <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                                <span id="copyTooltip">Copy to clipboard</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="sm:col-start-3 col-span-2">
+                    <div class="border-b border-gray-300"></div>
+                </div>
+
+                {% if user.is_authenticated and user_profile.pk == request.user.pk %}
+                    <div class="sm:col-start-3 col-span-2">
+                        <a href="{% url 'update_profile' user_profile.pk %}" class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update Profile</a>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <a href="{% url 'delete_profile' user_profile.pk %}" class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Profile</a>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Logout</button>
+                        </form>
+                    </div>
+                 {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("calendarLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+
+            var tooltip = document.getElementById("copyTooltip");
+            tooltip.innerHTML = "Copied!";
+
+        }
+    </script>
+
 {% endblock %}

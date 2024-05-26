@@ -3,13 +3,31 @@
 {% block title %}Delete Facility{% endblock %}
 
 {% block content %}
-    <h1>Delete Facility</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>Are you sure you want to delete "{{ object }}"?</p>
-        <input type="submit" value="Confirm">
+        <div class="space-y-12">
+            <div class=" pb-12">
+                <h1 class="text-center text-4xl font-semibold leading-7 text-gray-900 mt-5">Delete Facility</h1>
+                <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="sm:col-start-3 col-span-2">
+                        <label class="block text-base font-medium leading-6 text-gray-900">Are you sure you want to delete "{{ object }}"?</label>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Confirm</button>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <div class="border-b border-gray-300"></div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2 flex justify-center">
+                        <a href="{% url 'facility' object.pk %}" class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex items-center justify-center">
+                            <p>Cancel</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
-    <a href="{% url 'facility' object.pk %}">
-        <p>Cancel</p>
-    </a>
 {% endblock %}
