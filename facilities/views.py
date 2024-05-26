@@ -24,7 +24,7 @@ class FacilityView(DetailView):
         context['events'] = Event.objects.filter(facility=self.get_object().id)
 
         try:
-            context['user_rating'] = Rating.objects.filter(user=self.get_object().user.id).first()
+            context['user_rating'] = Rating.objects.get(user=self.request.user.id, facility=self.get_object().id)
         except Rating.DoesNotExist:
             context['user_rating'] = None
 
