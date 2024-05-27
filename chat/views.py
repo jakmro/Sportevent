@@ -15,8 +15,7 @@ def room(request, uidb64):
             gettext("You are not registered for this event")
         )
     now = timezone.now()
-    meeting = Meeting.objects.filter(event=event).first()
-    if now + timedelta(days=1) < meeting.start_datetime:
+    if now + timedelta(days=1) < event.start_datetime:
         raise Http404(
             gettext("Chat for this event has not started yet")
         )
