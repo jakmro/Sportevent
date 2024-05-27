@@ -2,7 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from chat.models import ChatMessage
-from events.models import Meeting
+from events.models import Event
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -46,11 +46,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
     @database_sync_to_async
-    def save_message(self, meeting_id, user, message):
-        meeting = Meeting.objects.get(id=meeting_id)
-        ChatMessage.objects.create(meeting=meeting, user=user, message=message)
+    def save_message(self, event_id, user, message):
+        event = Event.objects.get(id=event_id)
+        ChatMessage.objects.create(event=event, user=user, message=message)
 
     @database_sync_to_async
-    def get_chat_history(self, meeting_id):
-        meeting = Meeting.objects.get(id=meeting_id)
-        return list(ChatMessage.objects.filter(meeting=meeting).values('user__username', 'message', 'timestamp'))
+    def get_chat_history(self, event_id):
+        event = Event.objects.get(id=event_id)
+        return list(ChatMessage.objects.filter(event=event).values('user__username', 'message', 'timestamp'))

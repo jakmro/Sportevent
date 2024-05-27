@@ -26,6 +26,7 @@
             <a href="{% url 'delete_registration' registration.pk %}">
                 <p>Unregister</p>
             </a>
+            <p>Chat link: {{ chat }}</p>
         {% endif %}
     {% endif %}
     {% if subscription_link %}
