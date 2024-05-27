@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Chat Room{% endblock %}
+
+{% block content %}
+    <label for="chat-log"></label>
+    <div class="p-4 flex items-center flex-col border-t border-gray-200">
+        <div id="chat-log"
+             class="flex flex-col items-end w-2/3 max-h-[80vh] p-2 overflow-y-scroll p-4 rounded border border-gray-200 mb-4"></div>
+        <label for="chat-message-input"></label>
+        <div class="w-1/2 h-[4vh] flex gap-2">
+            <input id="chat-message-input"
+                   class="w-full flex-grow p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+                   type="text" placeholder="Type a message...">
+            <button id="chat-message-submit"
+                    class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold p-2 rounded">
+                Send
+            </button>
+        </div>
+    </div>
+
+    {{ room_name|json_script:"room-name" }}
+
+    <script>
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        const chatSocket = new WebSocket(
+            `ws://${window.location.host}/ws/chat/${roomName}/`
+        );
+
+        chatSocket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            const chatLog = document.getElementById('chat-log');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = data.message;
+            messageElement.classList.add('bg-gray-100', 'p-2', 'rounded', 'mb-2', 'text-gray-700', 'text-right', 'max-w-[60%]', 'break-words');
+            chatLog.appendChild(messageElement);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        document.getElementById('chat-message-input').focus();
+        document.getElementById('chat-message-input').onkeyup = (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('chat-message-submit').click();
+            }
+        };
+
+        document.getElementById('chat-message-submit').onclick = (e) => {
+            const messageInputDom = document.getElementById('chat-message-input');
+            const message = messageInputDom.value;
+            if (message.length > 0) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInputDom.value = '';
+            }
+        };
+    </script>
+{% endblock %}
