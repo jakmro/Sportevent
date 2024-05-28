@@ -3,26 +3,27 @@
 {% block title %}Chat Room{% endblock %}
 
 {% block content %}
-    <label for="chat-log"></label>
-    <div class="p-4 flex items-center flex-col border-t border-gray-200">
-        <div id="chat-log"
-             class="flex flex-col items-end w-2/3 h-60 p-2 overflow-y-scroll p-4 rounded border border-gray-200 mb-4"></div>
-        <label for="chat-message-input"></label>
-        <div class="w-1/2 h-[4vh] flex gap-2">
-            <input id="chat-message-input"
-                   class="w-full flex-grow p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
-                   type="text" placeholder="Type a message...">
-            <button id="chat-message-submit"
-                    class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold p-2 rounded">
-                Send
-            </button>
+    <div class="container mx-auto p-6">
+        <div class="p-4 flex flex-col items-center border-t border-gray-200">
+            <div id="chat-log" class="flex flex-col w-2/3 h-96 p-4 overflow-y-scroll rounded border border-gray-200 mb-4 bg-white shadow-lg"></div>
+            <div class="w-2/3 flex gap-2">
+                <input id="chat-message-input"
+                       class="flex-grow p-3 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+                       type="text" placeholder="Type a message...">
+                <button id="chat-message-submit"
+                        class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition-colors duration-200">
+                    Send
+                </button>
+            </div>
         </div>
     </div>
 
     {{ room_name|json_script:"room-name" }}
+    {{ user.username|json_script:"username" }}
 
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const username = JSON.parse(document.getElementById('username').textContent);
 
         const chatSocket = new WebSocket(
             `ws://${window.location.host}/ws/chat/${roomName}/`
@@ -32,8 +33,16 @@
             const data = JSON.parse(e.data);
             const chatLog = document.getElementById('chat-log');
             const messageElement = document.createElement('div');
-            messageElement.textContent = data.message;
-            messageElement.classList.add('bg-gray-100', 'p-2', 'rounded', 'mb-2', 'text-gray-700', 'text-right', 'max-w-[60%]', 'break-words');
+
+            messageElement.textContent = `${data.user}: ${data.message}`;
+            messageElement.classList.add('p-3', 'rounded', 'mb-2', 'max-w-3/4', 'break-words', 'shadow-md', 'animate-fade-in');
+
+            if (data.user === username) {
+                messageElement.classList.add('bg-blue-100', 'self-end', 'text-right');
+            } else {
+                messageElement.classList.add('bg-gray-100', 'self-start', 'text-left');
+            }
+
             chatLog.appendChild(messageElement);
             chatLog.scrollTop = chatLog.scrollHeight;
         };
@@ -50,10 +59,22 @@
             const message = messageInputDom.value;
             if (message.length > 0) {
                 chatSocket.send(JSON.stringify({
-                    'message': message
+                    'message': message,
+                    'user': username
                 }));
                 messageInputDom.value = '';
             }
         };
     </script>
+
+    <style>
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-in-out;
+        }
+    </style>
 {% endblock %}
