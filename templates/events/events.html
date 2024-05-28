@@ -3,24 +3,35 @@
 {% block title %}Events{% endblock %}
 
 {% block content %}
-    <a href="{% url 'add_event' %}">
-        <p>Add Event</p>
-    </a>
-    <form action="{% url 'events' %}" method="get">
-        <label>
-            <input name="q" type="text" placeholder="Search...">
-        </label>
-        <button type="submit">Search</button>
-    </form>
-    <ul>
-        {% for event in events_list %}
-            <a href="{% url 'event' event.pk %}">
-                <h2>{{ event.name }}</h2>
-            </a>
-            <p>{{ event.description }}</p>
-            <p>{{ event.date }}</p>
-            <p>{{ event.facility }}</p>
-            <p>{{ event.sport_type }}</p>
-        {% endfor %}
-    </ul>
+<div class="space-y-12">
+        <div class=" pb-12">
+            <div class="mt-10 ml-5 grid grid-cols-6 gap-x-6 gap-y-3 sm:grid-cols-6">
+                <div class="sm:col-start-2 col-span-4 rounded-xl">
+
+                    <form action="{% url 'events' %}" method="get" class="flex items-center space-x-4">
+                        <label class="flex-1">
+                            <input type="text" name="q" placeholder="Search..." id="q" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        </label>
+                        <button type="submit" class="text-indigo-600 hover:text-indigo-700">Search</button>
+                        <a href="{% url 'add_event' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Event</a>
+                    </form>
+
+                </div>
+                {% for event in events_list %}
+
+                    <div class="sm:col-start-2 col-span-4 h-40 rounded-xl">
+                        <a href="{% url 'event' event.pk %}" class="flex items-center space-x-4 rounded-xl border-gray-300 border-2 p-3">
+                            <div>
+                                <p class="text-2xl font-semibold text-blue-600">{{ event.name }}</p>
+                                <p class="text-gray-700 mt-2">{{ event.description }}</p>
+                                <p class="text-gray-500 mt-1"><strong>Start date:</strong> {{ event.start_datetime }} &nbsp;&nbsp;&nbsp; <strong>End date:</strong> {{ event.end_datetime }}</p>
+                                <p class="text-gray-500"><strong>Facility:</strong> {{ event.facility }} &nbsp;&nbsp;&nbsp; <strong>Sport Type:</strong> {{ event.sport_type }}</p>
+                            </div>
+                        </a>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
