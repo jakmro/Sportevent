@@ -3,10 +3,113 @@
 {% block title %}Add Event{% endblock %}
 
 {% block content %}
-    <h1>Add Event</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add</button>
+        <div class="space-y-12">
+            <div class=" pb-12">
+                <h1 class="text-center text-4xl font-semibold leading-7 text-gray-900 mt-5">Add Event</h1>
+                <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="facility" class="block text-sm font-medium leading-6 text-gray-900">Facility</label>
+                        <div class="mt-2">
+                            {{ form.facility }}
+                            {% for error in form.name.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
+                        <div class="mt-2">
+                          <input type="text" name="name" id="name" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.name.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description</label>
+                        <div class="mt-2">
+                          <textarea id="description" name="description" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                            {% for error in form.description.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="sport_type" class="block text-sm font-medium leading-6 text-gray-900">Sport Type</label>
+                        <div class="mt-2">
+                          <input type="text" name="sport_type" id="sport_type" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.sport_type.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="start_datetime" class="block text-sm font-medium leading-6 text-gray-900">Start time</label>
+                        {{ form.start_datetime }}
+                        {% for error in form.start_datetime.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="end_datetime" class="block text-sm font-medium leading-6 text-gray-900">End time</label>
+                        {{ form.end_datetime }}
+                        {% for error in form.end_datetime.errors %}
+                            <p class="text-red-500 text-xs italic">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="meeting_count" class="block text-sm font-medium leading-6 text-gray-900">Meeting count</label>
+                        <div class="mt-2">
+                          <input type="number" name="meeting_count" id="meeting_count" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.meeting_count.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="repeat_every_n_days" class="block text-sm font-medium leading-6 text-gray-900">Repeat every n days</label>
+                        <div class="mt-2">
+                          <input type="number" name="repeat_every_n_days" id="repeat_every_n_days" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.repeat_every_n_days.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="min_people_no" class="block text-sm font-medium leading-6 text-gray-900">Min people number</label>
+                        <div class="mt-2">
+                          <input type="number" name="min_people_no" id="min_people_no" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.min_people_no.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <label for="max_people_no" class="block text-sm font-medium leading-6 text-gray-900">Max people number</label>
+                        <div class="mt-2">
+                          <input type="number" name="max_people_no" id="max_people_no" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            {% for error in form.max_people_no.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="sm:col-start-3 col-span-2">
+                        <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 {% endblock %}

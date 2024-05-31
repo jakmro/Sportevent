@@ -3,48 +3,123 @@
 {% block title %}Event{% endblock %}
 
 {% block content %}
-    <h2>Name: {{ event.name }}</h2>
-    <a href="{% url 'facility' event.facility_id %}">
-        <p>Facility: {{ event.facility }}</p>
-    </a>
-    <p>Description: {{ event.description }}</p>
-    <p>Sport type: {{ event.sport_type }}</p>
-    <p>Start datetime: {{ event.start_datetime }}</p>
-    <p>End datetime: {{ event.end_datetime }}</p>
-    <p>Meeting count: {{ event.meeting_count }}</p>
-    {% if event.repeat_every_n_days %}
-        <p>Repeat every {{ event.repeat_every_n_days }} days</p>
-    {% endif %}
-    <p>Min people no: {{ event.min_people_no }}</p>
-    <p>Max people no: {{ event.max_people_no }}</p>
-    {% if user.is_authenticated %}
-        {% if not registration %}
-            <a href="{% url 'add_registration' event.pk %}">
-                <p>Register</p>
-            </a>
-        {% else %}
-            <a href="{% url 'delete_registration' registration.pk %}">
-                <p>Unregister</p>
-            </a>
-            <p>Chat link: {{ chat }}</p>
-        {% endif %}
-    {% endif %}
-    {% if subscription_link %}
-        <a href="{{ subscription_link }}">Event calendar subscription link</a>
-        <br>
-        {{ subscription_link }}
-    {% endif %}
-    {% if user.is_authenticated and user.pk == event.user.pk %}
-        <a href="{% url 'update_event' event.pk %}">
-            <p>Update Event</p>
-        </a>
-        <a href="{% url 'delete_event' event.pk %}">
-            <p>Delete Event</p>
-        </a>
-    {% endif %}
-    {% for registration in registrations %}
-        <a href="{% url 'user_profile' registration.user.pk %}">
-            <p>{{ registration.user }}</p>
-        </a>
-    {% endfor %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-4xl font-semibold">{{ event.name }}</h2>
+                {% if user.is_authenticated and user.pk == event.user.pk %}
+                    <div class="flex space-x-2">
+                        <a href="{% url 'update_event' event.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                            Update
+                        </a>
+                        <a href="{% url 'delete_event' event.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                            Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <a href="{% url 'facility' event.facility_id %}" class="text-blue-600 hover:underline">
+                    <p class="text-lg font-medium text-gray-800"><strong>Facility:</strong> {{ event.facility }}</p>
+                </a>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Description:</strong></p>
+                <p class="text-gray-700">{{ event.description }}</p>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Sport Type:</strong></p>
+                <p class="text-gray-700">{{ event.sport_type }}</p>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Start Date and Time:</strong></p>
+                <p class="text-gray-700">{{ event.start_datetime }}</p>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>End Date and Time:</strong></p>
+                <p class="text-gray-700">{{ event.end_datetime }}</p>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Meeting Count:</strong></p>
+                <p class="text-gray-700">{{ event.meeting_count }}</p>
+            </div>
+
+            {% if event.repeat_every_n_days %}
+                <div class="mb-4">
+                    <p class="text-lg font-medium text-gray-800"><strong>Repeat Every:</strong></p>
+                    <p class="text-gray-700">{{ event.repeat_every_n_days }} days</p>
+                </div>
+            {% endif %}
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Min People No:</strong></p>
+                <p class="text-gray-700">{{ event.min_people_no }}</p>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-lg font-medium text-gray-800"><strong>Max People No:</strong></p>
+                <p class="text-gray-700">{{ event.max_people_no }}</p>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="mt-6">
+                    {% if not registration %}
+                        <a href="{% url 'add_registration' event.pk %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                            Register
+                        </a>
+                    {% else %}
+                        <a href="{% url 'delete_registration' registration.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                            Unregister
+                        </a>
+                        <a href="{{ chat }}" class="inline-block bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-500">
+                            Click here to go to the event chat
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if subscription_link %}
+                <p class="text-lg font-medium text-gray-800 mt-5"><strong>Calendar:</strong></p>
+                {% if subscription_link %}
+                    <div class="mt-2 flex">
+                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
+                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                            <span id="copyTooltip">Copy to clipboard</span>
+                        </button>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <div class="bg-gray-100 shadow-inner rounded-lg p-6 mt-8">
+                <h3 class="text-2xl font-semibold mb-4">Registrations</h3>
+                <ul>
+                    {% for registration in registrations %}
+                        <li class="mb-4">
+                            <a href="{% url 'user_profile' registration.user.pk %}" class="text-blue-600 hover:underline">
+                                <p class="text-gray-800">{{ registration.user }}</p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("calendarLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+
+            var tooltip = document.getElementById("copyTooltip");
+            tooltip.innerHTML = "Copied!";
+        }
+    </script>
 {% endblock %}
