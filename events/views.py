@@ -5,12 +5,15 @@ from django.http import Http404, HttpResponse
 from django.utils.translation import gettext
 from django.db.models import Q
 from django.core.mail import send_mail
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration, Meeting
 from .helpers import validate_event_form, add_meetings
 from accounts.mixins import EmailVerificationRequiredMixin
+
 
 
 class EventsView(ListView):
@@ -39,6 +42,10 @@ class EventView(DetailView):
         event_id = self.get_object().id
         user_id = self.request.user.id
         context['registrations'] = EventRegistration.objects.filter(event=event_id)
+
+        uidb64 = urlsafe_base64_encode(force_bytes(event_id))
+        chat_link = self.request.build_absolute_uri(reverse('room', kwargs={'uidb64': uidb64}))
+        context['chat'] = chat_link
 
         try:
             context['registration'] = EventRegistration.objects.get(user_id=user_id, event_id=event_id)
