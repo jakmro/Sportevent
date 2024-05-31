@@ -6,14 +6,13 @@ from django.utils.translation import gettext
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
 from ics import Calendar, Event as IcsEvent
 from sqlite3 import IntegrityError
 from .forms import EventForm, EventRegistrationForm
 from .models import Event, EventRegistration, Meeting
 from .helpers import validate_event_form, add_meetings
 from accounts.mixins import EmailVerificationRequiredMixin
-
 
 
 class EventsView(ListView):
