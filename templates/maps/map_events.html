@@ -13,7 +13,7 @@
                 infoDiv.classList.add('hidden');
             });
 
-            fetch("http://localhost:8000/maps/meetings_data")
+            fetch("http://localhost:8000/maps/events_data")
                 .then((response) => response.json())
                 .then((data) => {
                     data.forEach((i) => {

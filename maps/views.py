@@ -39,7 +39,7 @@ def get_facilities_data(request):
     return JsonResponse(facilities, safe=False)
 
 
-def get_meetings_data(request):
+def get_events_data(request):
     meetings = Meeting.objects.values()
 
     first_meetings = {}
