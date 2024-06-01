@@ -12,7 +12,7 @@
                     <div class="sm:col-start-3 col-span-2">
                         <label for="name" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
                         <div class="mt-2">
-                          <input type="text" name="name" id="name" autocomplete="name" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <input type="text" name="name" id="name" autocomplete="name" class="block w-full rounded border px-3 py-1.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             {% for error in form.name.errors %}
                                 <p class="text-red-500 text-xs italic">{{ error }}</p>
                             {% endfor %}
@@ -22,7 +22,7 @@
                     <div class="sm:col-start-3 col-span-2">
                         <label for="description" class="block text-sm font-medium leading-6 text-gray-900">Description</label>
                         <div class="mt-2">
-                          <textarea id="description" name="description" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                          <textarea id="description" name="description" rows="3" class="block w-full rounded border py-1.5 px-3 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                             {% for error in form.description.errors %}
                                 <p class="text-red-500 text-xs italic">{{ error }}</p>
                             {% endfor %}
@@ -37,7 +37,7 @@
                     <div class="sm:col-start-3 col-span-2">
                         <label for="location" class="block text-sm font-medium leading-6 text-gray-900">Location</label>
                         <div class="mt-2">
-                          <input type="text" name="location" id="location" autocomplete="location" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <input type="text" name="location" id="location" autocomplete="location" class="block w-full rounded border px-3 py-1.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             {% for error in form.location.errors %}
                                 <p class="text-red-500 text-xs italic">{{ error }}</p>
                             {% endfor %}
@@ -47,7 +47,7 @@
                      <div class="sm:col-start-3 col-span-2">
                         <label for="sport_type" class="block text-sm font-medium leading-6 text-gray-900">Sport Type</label>
                         <div class="mt-2">
-                          <input type="text" name="sport_type" id="sport_type" autocomplete="sport_type" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <input type="text" name="sport_type" id="sport_type" autocomplete="sport_type" class="block w-full rounded border px-3 py-1.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             {% for error in form.sport_type.errors %}
                                 <p class="text-red-500 text-xs italic">{{ error }}</p>
                             {% endfor %}
@@ -64,12 +64,12 @@
                     <div class="sm:col-start-3 col-span-2">
                         <label for="contact_information" class="block text-sm font-medium leading-6 text-gray-900">Contact Information</label>
                         <div class="mt-2">
-                          <textarea id="contact_information" name="contact_information" rows="3" class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                          <textarea id="contact_information" name="contact_information" rows="3" class="block w-full rounded border py-1.5 px-3 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                         </div>
                     </div>
 
                     <div class="sm:col-start-3 col-span-2">
-                        <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add</button>
+                        <button type="submit" class="w-full rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Add</button>
                     </div>
                 </div>
             </div>

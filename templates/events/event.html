@@ -4,15 +4,15 @@
 
 {% block content %}
     <div class="container mx-auto p-6">
-        <div class="bg-white shadow-lg rounded-lg p-8">
+        <div class="bg-white  rounded p-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-4xl font-semibold">{{ event.name }}</h2>
                 {% if user.is_authenticated and user.pk == event.user.pk %}
                     <div class="flex space-x-2">
-                        <a href="{% url 'update_event' event.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">
+                        <a href="{% url 'update_event' event.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
                             Update
                         </a>
-                        <a href="{% url 'delete_event' event.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                        <a href="{% url 'delete_event' event.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
                             Delete
                         </a>
                     </div>
@@ -70,14 +70,14 @@
             {% if user.is_authenticated %}
                 <div class="mt-6">
                     {% if not registration %}
-                        <a href="{% url 'add_registration' event.pk %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                        <a href="{% url 'add_registration' event.pk %}" class="inline-block bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
                             Register
                         </a>
                     {% else %}
-                        <a href="{% url 'delete_registration' registration.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                        <a href="{% url 'delete_registration' registration.pk %}" class="inline-block bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
                             Unregister
                         </a>
-                        <a href="{{ chat }}" class="inline-block bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-500">
+                        <a href="{{ chat }}" class="inline-block bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-500">
                             Click here to go to the event chat
                         </a>
                     {% endif %}
@@ -88,15 +88,15 @@
                 <p class="text-lg font-medium text-gray-800 mt-5"><strong>Calendar:</strong></p>
                 {% if subscription_link %}
                     <div class="mt-2 flex">
-                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
-                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l border-gray-300">
+                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r hover:bg-indigo-500">
                             <span id="copyTooltip">Copy to clipboard</span>
                         </button>
                     </div>
                 {% endif %}
             {% endif %}
 
-            <div class="bg-gray-100 shadow-inner rounded-lg p-6 mt-8">
+            <div class="bg-gray-100  rounded p-6 mt-8">
                 <h3 class="text-2xl font-semibold mb-4">Registrations</h3>
                 <ul>
                     {% for registration in registrations %}

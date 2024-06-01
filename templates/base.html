@@ -15,7 +15,7 @@
 <main>
     <header>
         <div class="bg-white h-[8vh]">
-            <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+            <nav class="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8" aria-label="Global">
                 <div class="flex lg:flex-1">
                     <a href={% url 'home' %} class="-m-1.5 p-1.5">
                     <div class="flex">
@@ -30,7 +30,7 @@
                 </div>
                 <div class="lg:flex lg:gap-x-12">
                     <a href="{% url 'facilities' %}"
-                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                       class="p-2 text-base font-semibold leading-6 text-gray-900 hover:bg-indigo-500 hover:rounded hover:text-white">
                         <div class="flex">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                  stroke-width="1.5"
@@ -42,7 +42,7 @@
                         </div>
                     </a>
                     <a href="{% url 'events' %}"
-                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                       class="p-2 text-base font-semibold leading-6 text-gray-900 hover:bg-indigo-500 hover:rounded hover:text-white">
                         <div class="flex">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                  stroke-width="1.5"
@@ -53,8 +53,8 @@
                             <p class="ml-0.5">Events</p>
                         </div>
                     </a>
-                    <a href="{% url 'maps' %}"
-                       class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                    <a href="{% url 'maps_facilities' %}"
+                       class="p-2 text-base font-semibold leading-6 text-gray-900 hover:bg-indigo-500 hover:rounded hover:text-white">
                         <div class="flex">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                  stroke-width="1.5"
@@ -69,7 +69,7 @@
                 <div class="lg:flex lg:flex-1 lg:justify-end">
                     {% if user.is_authenticated %}
                         <a href="{% url 'user_profile' user.pk %}"
-                           class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">
+                           class="p-2 text-base font-semibold leading-6 text-gray-900 hover:bg-indigo-500 hover:rounded hover:text-white">
                             <div class="flex">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                      stroke-width="1.5"
@@ -82,7 +82,7 @@
                         </a>
                     {% else %}
                         <a href="{% url 'login' %}"
-                           class="text-base font-semibold leading-6 text-gray-900 hover:underline underline-offset-4">Log
+                           class="p-2 text-base font-semibold leading-6 text-gray-900 hover:bg-indigo-500 hover:rounded hover:text-white">Log
                             in</a>
                     {% endif %}
                 </div>

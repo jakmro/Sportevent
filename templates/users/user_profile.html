@@ -51,8 +51,8 @@
                     <label class="block text-sm font-medium leading-6 text-gray-900">Calendar:</label>
                     {% if subscription_link %}
                         <div class="mt-2 flex">
-                            <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
-                            <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                            <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l border-gray-300">
+                            <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r hover:bg-indigo-500">
                                 <span id="copyTooltip">Copy to clipboard</span>
                             </button>
                         </div>
@@ -65,17 +65,17 @@
 
                 {% if user.is_authenticated and user_profile.pk == request.user.pk %}
                     <div class="sm:col-start-3 col-span-2">
-                        <a href="{% url 'update_profile' user_profile.pk %}" class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update Profile</a>
+                        <a href="{% url 'update_profile' user_profile.pk %}" class="block w-full rounded bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Update Profile</a>
                     </div>
 
                     <div class="sm:col-start-3 col-span-2">
-                        <a href="{% url 'delete_profile' user_profile.pk %}" class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Profile</a>
+                        <a href="{% url 'delete_profile' user_profile.pk %}" class="block w-full rounded bg-indigo-600 px-3 py-2 text-sm text-center font-semibold text-white  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Delete Profile</a>
                     </div>
 
                     <div class="sm:col-start-3 col-span-2">
                         <form action="{% url 'logout' %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Logout</button>
+                            <button type="submit" class="w-full rounded bg-indigo-600 px-3 py-2 text-sm font-semibold text-white  hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Logout</button>
                         </form>
                     </div>
                  {% endif %}

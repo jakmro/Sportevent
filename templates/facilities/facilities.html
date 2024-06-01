@@ -6,24 +6,24 @@
     <div class="space-y-12">
         <div class=" pb-12">
             <div class="mt-10 ml-5 grid grid-cols-6 gap-x-6 gap-y-3 sm:grid-cols-6">
-                <div class="sm:col-start-2 col-span-4 rounded-xl">
+                <div class="sm:col-start-2 col-span-4 rounded">
 
                     <form action="{% url 'facilities' %}" method="get" class="flex items-center space-x-4">
                         <label class="flex-1">
-                            <input type="text" name="q" placeholder="Search..." id="q" class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <input type="text" name="q" placeholder="Search..." id="q" class="block w-full rounded border px-3 py-1.5 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         </label>
                         <button type="submit" class="text-indigo-600 hover:text-indigo-700">Search</button>
-                        <a href="{% url 'add_facility' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Facility</a>
+                        <a href="{% url 'add_facility' %}" class="px-4 py-2 bg-indigo-600 text-white rounded  hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Facility</a>
                     </form>
 
                 </div>
                 {% for facility in facilities_list %}
 
-                    <div class="sm:col-start-2 col-span-4 h-40 rounded-xl">
-                        <a href="{% url 'facility' facility.pk %}" class="flex items-center space-x-4 rounded-xl border-gray-300 border-2">
-                            <div class="w-40 h-40 rounded-xl">
+                    <div class="sm:col-start-2 col-span-4 h-40 rounded">
+                        <a href="{% url 'facility' facility.pk %}" class="flex items-center space-x-4 rounded border-gray-300 border">
+                            <div class="w-40 h-40 rounded">
                                 {% if facility.image %}
-                                    <img src="{{ facility.image.url }}" alt="{{ facility.name }}" class="w-full h-full object-cover rounded-xl">
+                                    <img src="{{ facility.image.url }}" alt="{{ facility.name }}" class="w-full h-full object-cover">
                                 {% endif %}
                             </div>
 

@@ -12,10 +12,10 @@
                 </div>
                 {% if user.is_authenticated and user.pk == facility.user.pk %}
                     <div class="flex items-center space-x-4">
-                        <a href="{% url 'update_facility' facility.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md">
+                        <a href="{% url 'update_facility' facility.pk %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded">
                             Update Facility
                         </a>
-                        <a href="{% url 'delete_facility' facility.pk %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-md">
+                        <a href="{% url 'delete_facility' facility.pk %}" class="inline-block bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded">
                             Delete Facility
                         </a>
                     </div>
@@ -33,7 +33,7 @@
             <h3 class="text-lg font-semibold mb-2">Events</h3>
             <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {% for event in events %}
-                    <div class="border rounded-lg overflow-hidden shadow-md">
+                    <div class="border rounded overflow-hidden ">
                         <div class="p-4">
                             <h4 class="font-semibold text-lg mb-2">{{ event.name }}</h4>
                             <p class="text-xs text-gray-600 mb-2">{{ event.start_datetime|date:"F d, Y H:i" }} - {{ event.end_datetime|date:"H:i" }}</p>
@@ -48,8 +48,8 @@
                 <label class="block text-sm font-medium leading-6 text-gray-900">Calendar:</label>
                 {% if subscription_link %}
                     <div class="mt-2 flex">
-                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l-lg border-gray-300">
-                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-500">
+                        <input type="text" id="calendarLink" value="{{ subscription_link }}" readonly class="w-full p-2 border rounded-l border-gray-300">
+                        <button onclick="copyToClipboard()" onmouseout="resetTooltip()" class="p-2 bg-indigo-600 text-white rounded-r hover:bg-indigo-500">
                             <span id="copyTooltip">Copy to clipboard</span>
                         </button>
                     </div>
@@ -60,7 +60,7 @@
         <h3 class="text-lg font-semibold">Ratings</h3>
         <div class="mt-4 space-y-4">
             {% for rating in ratings %}
-                <div class="bg-white shadow overflow-hidden rounded-lg mb-8">
+                <div class="bg-white overflow-hidden rounded mb-8">
                     <div class="px-4 py-5 sm:px-6">
                         <div class="flex justify-between items-center">
                             <h3 class="text-lg font-medium text-gray-900">{{ rating.user }}</h3>
@@ -93,7 +93,7 @@
         </div>
         <div class="mt-8">
             {% if not user_rating %}
-                <a href="{% url 'add_rating' facility.pk %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-md">
+                <a href="{% url 'add_rating' facility.pk %}" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded">
                     Add Rating
                 </a>
             {% endif %}

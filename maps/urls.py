@@ -1,10 +1,14 @@
 from django.urls import path
 from .views import (
-    MapView,
-    get_facilities_data
+    MapFacilitiesView,
+    MapEventsView,
+    get_facilities_data,
+    get_meetings_data
 )
 
 urlpatterns = [
-    path('', MapView.as_view(), name='maps'),
-    path('facilities_data/', get_facilities_data, name='get_facilities_data')
+    path('facilities/', MapFacilitiesView.as_view(), name='maps_facilities'),
+    path('events/', MapEventsView.as_view(), name='maps_events'),
+    path('facilities_data/', get_facilities_data, name='get_facilities_data'),
+    path('meetings_data/', get_meetings_data, name='get_meetings_data')
 ]
