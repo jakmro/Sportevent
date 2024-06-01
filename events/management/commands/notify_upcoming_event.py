@@ -2,10 +2,11 @@ from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse
 from datetime import timedelta
 from events.models import Meeting, EventRegistration
+
 
 class Command(BaseCommand):
     help = 'Notify registered users about upcoming events'

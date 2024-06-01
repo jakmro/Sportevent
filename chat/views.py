@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.http import Http404, HttpResponse
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.http import Http404
+from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext
 from django.utils import timezone
 from events.models import EventRegistration, Event
 from datetime import timedelta
+
 
 def room(request, uidb64):
     room_name = urlsafe_base64_decode(uidb64).decode()
