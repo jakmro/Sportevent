@@ -1,12 +1,12 @@
-all: install env migrate run
+all: venv install env migrate run
+
+venv:
+	pip3 install virtualenv
+	python3 -m venv .venv
 
 install:
-	pip3 install -r requirements.txt
-	npm install
-
-migrate:
-	python3 manage.py makemigrations
-	python3 manage.py migrate
+	. .venv/bin/activate && pip3 install -r requirements.txt
+	. .venv/bin/activate && npm install
 
 env:
 	touch .env
@@ -14,5 +14,9 @@ env:
 	echo EMAIL_ADDRESS=YOUR_GMAIL_ADDRESS >> .env
 	echo EMAIL_PASSWORD=YOUR_GMAIL_GENERATED_PASSWORD >> .env
 
+migrate:
+	. .venv/bin/activate && python3 manage.py makemigrations
+	. .venv/bin/activate && python3 manage.py migrate
+
 run:
-	python3 manage.py runserver
+	. .venv/bin/activate && python3 manage.py runserver
