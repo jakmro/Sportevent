@@ -3,10 +3,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <form action="{% url 'facilities' %}" method="get">
-        <label>
-            <input name="q" type="text" placeholder="Search...">
-        </label>
-        <button type="submit">Search</button>
-    </form>
+    <div class="w-1/2 mx-auto flex justify-center items-center h-[50vh]">
+        <form action="{% url 'facilities' %}" method="get" class="w-full">
+            <div class="flex">
+                <label class="w-full">
+                    <input name="q" type="text" placeholder="Search..."
+                           class="block w-full rounded border p-2 text-gray-900  ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </label>
+                <button type="submit" class="p-2 bg-indigo-500 text-white rounded hover:text-indigo-600">Search</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}
