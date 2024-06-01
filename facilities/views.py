@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, Http404, HttpResponse
+from django.http import Http404, HttpResponse
 from django.db.models import Avg, Q, FloatField, Count
 from django.db.models.functions import Round
 from django.utils.translation import gettext
@@ -157,18 +157,6 @@ def facility_calendar(request, pk):
     response['Content-Disposition'] = 'attachment; filename="facility_calendar.ics"'
 
     return response
-
-
-def get_facilities_data(request):
-    facilities = list(Facility.objects.values())
-    for i, facility in enumerate(facilities):
-        rating = Rating.objects.filter(facility_id=facility['id']).aggregate(Avg('rating'))
-        if rating['rating__avg']:
-            rounded_rating = round(rating['rating__avg'], 1)
-        else:
-            rounded_rating = 'No ratings'
-        facilities[i]['rating'] = rounded_rating
-    return JsonResponse(facilities, safe=False)
 
 
 class AddRatingView(LoginRequiredMixin, EmailVerificationRequiredMixin, CreateView):
