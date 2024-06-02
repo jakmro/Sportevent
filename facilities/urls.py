@@ -4,7 +4,6 @@ from .views import (
     FacilityView,
     AddFacilityView,
     AddRatingView,
-    get_facilities_data,
     UpdateFacilityView,
     DeleteFacilityView,
     UpdateRatingView,
@@ -21,6 +20,5 @@ urlpatterns = [
     path('<int:pk>/update_rating/', UpdateRatingView.as_view(), name='update_rating'),
     path('<int:pk>/delete_rating/', DeleteRatingView.as_view(), name='delete_rating'),
     path('<int:pk>/delete/', DeleteFacilityView.as_view(), name='delete_facility'),
-    path('<int:pk>/update/', UpdateFacilityView.as_view(), name='update_facility'),
-    path('data/', get_facilities_data, name='get_facilities_data')
+    path('<int:pk>/update/', UpdateFacilityView.as_view(), name='update_facility')
 ]
