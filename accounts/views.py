@@ -38,6 +38,7 @@ def send_verification_email(request, user):
         None,
         [user.email]
     )
+    print(verify_url)
 
 
 def activate(request, uidb64, token):
